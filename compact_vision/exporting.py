@@ -10,7 +10,7 @@ from onnxruntime.quantization.shape_inference import quant_pre_process
 import torch
 
 from .common import environment, object_hash, provenance, sha256, write_json
-from .data import dataset
+from .data import dataset, development_indices
 from .model import load_model
 from .preprocessing import CONTRACT, preprocess
 from .runtime import OnnxBackend
@@ -39,7 +39,8 @@ def export_fp32(config, manifest):
     session = OnnxBackend(path, threads=config["baseline_threads"])
     source = dataset(config["data_root"], True)
     errors, failures, disagreements = [], 0, 0
-    for index in manifest["indices"]["validation"][:32]:
+    corpus = development_indices(manifest, source)
+    for index in corpus:
         inputs = preprocess(source[index][0])
         with torch.inference_mode():
             reference = model(torch.from_numpy(inputs)).numpy()
@@ -50,11 +51,12 @@ def export_fp32(config, manifest):
         errors.append({"source_index": index, "max_absolute_error": float(difference.max()), "mean_absolute_error": float(difference.mean()),
                        "max_relative_error_with_1e-8_floor": float((difference / np.maximum(np.abs(reference), 1e-8)).max())})
     # Exercise the exported dynamic batch dimension too.
-    pair = np.concatenate([preprocess(source[i][0]) for i in manifest["indices"]["validation"][:2]])
+    pair = np.concatenate([preprocess(source[i][0]) for i in corpus[:2]])
     with torch.inference_mode():
         np.testing.assert_allclose(session.predict(pair), model(torch.from_numpy(pair)).numpy(), atol=config["parity_atol"], rtol=config["parity_rtol"])
     report = {"artifact": graph_info(path), "preprocessing": CONTRACT, "input_signature": "float32 NCHW [N,3,224,224], N>=1",
-              "output_signature": "float32 [N,10] logits, CIFAR-10 class order", "corpus": "first 32 frozen validation indices",
+              "output_signature": "float32 [N,10] logits, CIFAR-10 class order", "corpus": "32 fixed validation indices; one per class first, then manifest order",
+              "class_coverage": sorted({source.targets[i] for i in corpus}),
               "n": len(errors), "atol": config["parity_atol"], "rtol": config["parity_rtol"],
               "element_tolerance_failures": failures, "top1_disagreements": disagreements, "per_input": errors,
               "dynamic_batch_two_passed": True, "checkpoint_sha256": sha256(artifacts / "checkpoint.pt"),

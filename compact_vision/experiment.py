@@ -20,7 +20,7 @@ import numpy as np
 
 from benchmarks.report import distribution, summarize
 from .common import environment, object_hash, provenance, read_json, write_json
-from .data import dataset
+from .data import dataset, development_indices
 from .preprocessing import CONTRACT, decode_image, describe, preprocess
 from .runtime import Engine, make_backend
 
@@ -28,13 +28,13 @@ from .runtime import Engine, make_backend
 def encoded_inputs(config, manifest, count=32):
     source = dataset(config["data_root"], True)
     encoded, identities = [], []
-    for index in manifest["indices"]["validation"][:count]:
+    for index in development_indices(manifest, source, count):
         stream = io.BytesIO()
         source[index][0].save(stream, format="PNG")
         content = stream.getvalue()
         import hashlib
         encoded.append(content)
-        identities.append({"official_train_index": index, "png_sha256": hashlib.sha256(content).hexdigest(), "bytes": len(content), "dimensions": [32, 32]})
+        identities.append({"official_train_index": index, "true_class_index": source.targets[index], "png_sha256": hashlib.sha256(content).hexdigest(), "bytes": len(content), "dimensions": [32, 32]})
     return encoded, identities
 
 
@@ -100,12 +100,12 @@ def model_study(config_path, config, manifest):
 
 
 @contextmanager
-def running_server(config_path, threads, log_path):
+def running_server(config_path, threads, log_path, *, tracing=True):
     with socket.socket() as sock:
         sock.bind(("127.0.0.1", 0))
         port = sock.getsockname()[1]
     env = os.environ.copy()
-    env.update(COMPACT_VISION_CONFIG=str(Path(config_path).resolve()), COMPACT_VISION_THREADS=str(threads), COMPACT_VISION_BACKEND="fp32")
+    env.update(COMPACT_VISION_CONFIG=str(Path(config_path).resolve()), COMPACT_VISION_THREADS=str(threads), COMPACT_VISION_BACKEND="fp32", COMPACT_VISION_TRACING="1" if tracing else "0")
     with Path(log_path).open("w") as log:
         process = subprocess.Popen([sys.executable, "-m", "uvicorn", "compact_vision.service:app", "--host", "127.0.0.1", "--port", str(port), "--workers", "1", "--log-level", "warning", "--no-access-log"], env=env, stdout=log, stderr=log)
         base_url = f"http://127.0.0.1:{port}"
@@ -196,10 +196,10 @@ async def traffic(base_url, config, encoded, *, rate, duration, warmup=50, trans
     return sorted(records, key=lambda row: row["scheduled_ns"]), traces, max(duration_ns, observed), expected
 
 
-def measured_http_run(config_path, config, manifest, encoded, identities, *, threads, rate, duration, directory):
+def measured_http_run(config_path, config, manifest, encoded, identities, *, threads, rate, duration, directory, tracing=True):
     directory = Path(directory)
     directory.mkdir(parents=True, exist_ok=False)
-    with running_server(config_path, threads, directory / "server.log") as (url, health):
+    with running_server(config_path, threads, directory / "server.log", tracing=tracing) as (url, health):
         records, traces, observed, expected = asyncio.run(traffic(url, config, encoded, rate=rate, duration=duration))
     run_manifest = {
         "schema_version": 1, "run_id": directory.name, "evidence_kind": "measured", "client_clock": "monotonic_offsets_ns",
@@ -208,7 +208,7 @@ def measured_http_run(config_path, config, manifest, encoded, identities, *, thr
         "reproducibility": {
             "model_sha256": health["model_sha256"], "inputs_sha256": object_hash(identities),
             "configuration": {"batch_size": 1, "service_workers": 1, "runtime_threads": {"intra_op": threads, "inter_op": 1},
-                              "other_thread_pools": {"inference_executor": 1}, "runtime_options": health["runtime"]},
+                              "other_thread_pools": {"inference_executor": 1}, "runtime_options": {**health["runtime"], "trace_collection": tracing}},
             "environment": {**environment(), "runtime": health["runtime"]["version"], "provider": health["runtime"]["providers"],
                             "load_generator": "same-host loopback httpx asyncio; shares CPU budget"},
             "code_revision": provenance()["revision"], "code": provenance(), "warmup_calls": 50,
@@ -235,6 +235,13 @@ def http_study(config_path, config, manifest):
     root.mkdir(parents=True, exist_ok=False)
     encoded, identities = encoded_inputs(config, manifest)
     baseline = config["baseline_threads"]
+    overhead = []
+    for repeat in range(3):
+        for tracing in ([False, True] if repeat % 2 == 0 else [True, False]):
+            report = measured_http_run(config_path, config, manifest, encoded, identities, threads=baseline,
+                                      rate=30, duration=8, directory=root / f"overhead-{int(tracing)}-r{repeat}", tracing=tracing)
+            overhead.append({"repeat": repeat, "trace_collection": tracing, "summary": report})
+    write_json(root / "instrumentation.json", {"runs": overhead, "interpretation": "incremental stage collection and trace-header overhead at 30 req/s; common wrapper/clock calls remain in both modes; short diagnostic, not a capacity result"})
     # Development pilots use validation images only; final rates/candidate freeze before final runs.
     pilots = {}
     for threads in [baseline, *config["candidate_threads"]]:

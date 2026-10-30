@@ -75,3 +75,16 @@ def validate_splits(splits):
     if not set(splits["calibration"]) <= set(splits["train"]):
         raise ValueError("calibration must be a subset of training")
     # Test indices belong to another source split; equal integer indices are not equal images.
+
+
+def development_indices(manifest, source, count=32):
+    """Include each available validation class before filling the fixed corpus."""
+    indices = manifest["indices"]["validation"]
+    selected, seen_labels = [], set()
+    for index in indices:
+        label = source.targets[index]
+        if label not in seen_labels:
+            selected.append(index)
+            seen_labels.add(label)
+    selected.extend(index for index in indices if index not in selected)
+    return selected[:count]

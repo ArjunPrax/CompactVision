@@ -78,6 +78,13 @@ class TimingTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "backwards"):
             trace.finish()
 
+    def test_stage_collection_can_be_disabled_without_changing_call_execution(self):
+        clock = Clock()
+        trace = Trace("image", clock=clock, collect_stages=False)
+        with trace.stage("model"):
+            clock.now += 13
+        self.assertEqual(trace.finish(), {"request_id": "image", "duration_ns": 13, "stages": []})
+
 
 class ReportTests(unittest.TestCase):
     def setUp(self):

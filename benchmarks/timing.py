@@ -46,7 +46,7 @@ class Trace:
     stages are rejected. Exceptions propagate while the failed stage is retained.
     """
 
-    def __init__(self, request_id, *, clock=perf_counter_ns):
+    def __init__(self, request_id, *, clock=perf_counter_ns, collect_stages=True):
         self.request_id = identifier(request_id, "request_id")
         self._clock = clock
         self._origin = nanoseconds(clock(), "clock")
@@ -54,6 +54,7 @@ class Trace:
         self._active = False
         self._closed = False
         self._stages = []
+        self._collect_stages = collect_stages
 
     def _offset(self):
         offset = nanoseconds(self._clock(), "clock") - self._origin
@@ -72,14 +73,15 @@ class Trace:
         identifier(name, "stage name")
         if self._closed or self._active:
             raise ValueError("stages require an open trace with no active stage")
-        start = self._offset()
+        start = self._offset() if self._collect_stages else None
         self._active = True
         try:
             yield
         finally:
             try:
-                end = self._offset()
-                self._stages.append({"name": name, "start_ns": start, "end_ns": end})
+                if self._collect_stages:
+                    end = self._offset()
+                    self._stages.append({"name": name, "start_ns": start, "end_ns": end})
             finally:
                 self._active = False
 

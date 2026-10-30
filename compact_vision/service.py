@@ -23,13 +23,15 @@ def create_app(config_path=None, *, backend=None, threads=None, engine_factory=E
         artifacts = os.environ.get("COMPACT_VISION_ARTIFACTS", config["artifacts"])
         chosen_backend = backend or os.environ.get("COMPACT_VISION_BACKEND", "fp32")
         chosen_threads = threads or int(os.environ.get("COMPACT_VISION_THREADS", config["baseline_threads"]))
+        tracing = os.environ.get("COMPACT_VISION_TRACING", "1") != "0"
         limiter = anyio.to_thread.current_default_thread_limiter()
         previous_tokens = limiter.total_tokens
         limiter.total_tokens = 1  # One inference executor; wait is measured, not hidden.
         try:
             app.state.engine = engine_factory(artifacts, backend=chosen_backend, threads=chosen_threads,
-                                              max_bytes=config["max_upload_bytes"], max_pixels=config["max_image_pixels"])
+                                              max_bytes=config["max_upload_bytes"], max_pixels=config["max_image_pixels"], collect_stages=tracing)
             app.state.config = config
+            app.state.tracing = tracing
             yield
         finally:
             limiter.total_tokens = previous_tokens
@@ -40,7 +42,7 @@ def create_app(config_path=None, *, backend=None, threads=None, engine_factory=E
     async def health():
         engine = app.state.engine
         return {"ready": True, "classes": engine.classes, "model_sha256": engine.backend.model_sha256,
-                "runtime": engine.backend.info, "preprocessing": CONTRACT, "inference_executor_threads": 1}
+                "runtime": engine.backend.info, "preprocessing": CONTRACT, "inference_executor_threads": 1, "trace_collection": app.state.tracing}
 
     @app.post("/predict")
     async def predict(request: Request):
@@ -70,6 +72,8 @@ def create_app(config_path=None, *, backend=None, threads=None, engine_factory=E
         payload, active_trace, active_origin, status, worker_start = await anyio.to_thread.run_sync(execute)
         serialization_start = perf_counter_ns()
         response = JSONResponse(payload, status_code=status)
+        if not app.state.tracing:
+            return response
         response_ready = perf_counter_ns()
         stages = [
             {"name": "body_read", "start_ns": 0, "end_ns": body_end - origin},

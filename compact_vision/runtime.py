@@ -65,7 +65,7 @@ def make_backend(artifacts, backend="fp32", threads=1, *, profile_prefix=None):
 
 
 class Engine:
-    def __init__(self, artifacts, *, backend="fp32", threads=1, max_bytes=8_388_608, max_pixels=12_000_000):
+    def __init__(self, artifacts, *, backend="fp32", threads=1, max_bytes=8_388_608, max_pixels=12_000_000, collect_stages=True):
         self.backend = make_backend(artifacts, backend, threads)
         self.classes = read_json(Path(artifacts) / "splits.json")["classes"]
         from .preprocessing import CONTRACT
@@ -74,9 +74,10 @@ class Engine:
         if read_json(Path(artifacts) / "training.json")["preprocessing"] != CONTRACT:
             raise ValueError("training/serving preprocessing contract mismatch")
         self.max_bytes, self.max_pixels = max_bytes, max_pixels
+        self.collect_stages = collect_stages
 
     def predict_bytes(self, encoded, request_id):
-        trace = Trace(request_id)
+        trace = Trace(request_id, collect_stages=self.collect_stages)
         decoded = False
         try:
             with trace.stage("decode"):

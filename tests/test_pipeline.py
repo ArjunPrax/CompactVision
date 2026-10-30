@@ -13,7 +13,7 @@ from torchvision.models import MobileNet_V3_Small_Weights
 
 from benchmarks.timing import validate_trace
 from compact_vision.common import read_json
-from compact_vision.data import validate_splits
+from compact_vision.data import development_indices, validate_splits
 from compact_vision.experiment import traffic
 from compact_vision.preprocessing import decode_image, preprocess
 from compact_vision.runtime import PredictionError
@@ -56,6 +56,14 @@ def test_split_leakage_checks_respect_source_split_and_calibration_subset():
     ):
         with pytest.raises(ValueError):
             validate_splits(splits)
+
+
+def test_development_parity_corpus_covers_classes_before_repeated_examples():
+    from types import SimpleNamespace
+    source = SimpleNamespace(targets=[0, 0, 1, 1, 2, 2])
+    manifest = {"indices": {"validation": [0, 1, 2, 3, 4, 5]}}
+    selected = development_indices(manifest, source, 4)
+    assert selected == [0, 2, 4, 1]
 
 
 class FakeEngine:

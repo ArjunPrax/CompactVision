@@ -8,7 +8,11 @@ Updated 30 October 2026.
 - The owner authorized implementation, creation of a GitHub repository and learning material assuming no prior knowledge.
 - The completed baseline remains unavailable: no matching implementation was found in this workspace, the targeted local search or the accessible GitHub repository-name search.
 - Upstream foundations are ONNX Runtime and TorchVision. They do not establish the owner's task/model/stack.
-- Current work is repository setup and introductory lessons. No model/service implementation, new model run, accuracy evaluation or load test has occurred.
+- Created and pushed the private GitHub repository `ArjunPrax/CompactVision`; the committed content is the six public setup/documentation files only.
+- Installed 12 locally ignored guide documents plus a learner-notes index. The curriculum starts with terminal/Python/image fundamentals and proceeds through model/preprocessing, ONNX/quantization, performance, experiments, the twelve questions and independent teach-back. The actual code walkthrough remains explicitly unfilled.
+- Verified the ignore rule and empty tracked-guide list before publishing. Checked relative document/lesson links, fenced blocks, Python snippet syntax and coverage of all twelve questions.
+- Created and hash-verified a separate local private guide backup. A second-device transfer has not occurred; the guides will not accompany a normal clone.
+- No model/service implementation, dependency installation, new model run, accuracy evaluation or load test has occurred. Documentation checks do not validate the original baseline or the proposed extension.
 
 ## Pending technical work
 

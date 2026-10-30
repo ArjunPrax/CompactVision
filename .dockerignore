@@ -7,3 +7,6 @@ work
 results
 COMPACT_VISION_*
 __pycache__
+.env
+.env.*
+configs/local.*

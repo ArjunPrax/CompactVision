@@ -44,7 +44,10 @@ def create_app(config_path=None, *, backend=None, threads=None, engine_factory=E
         return {"ready": True, "classes": engine.classes, "model_sha256": engine.backend.model_sha256,
                 "runtime": engine.backend.info, "preprocessing": CONTRACT, "inference_executor_threads": 1, "trace_collection": app.state.tracing}
 
-    @app.post("/predict")
+    @app.post("/predict", openapi_extra={"requestBody": {"required": True, "content": {
+        "image/png": {"schema": {"type": "string", "format": "binary"}},
+        "image/jpeg": {"schema": {"type": "string", "format": "binary"}},
+    }}})
     async def predict(request: Request):
         origin = perf_counter_ns()
         request_id = request.headers.get("x-request-id", uuid4().hex)

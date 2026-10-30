@@ -17,4 +17,6 @@ Read README.md, STATUS.md, IMPROVEMENT_PLAN.md and ATTRIBUTION.md before substan
 
 ## Current validation tooling
 
-The measurement helpers use the Python standard library. Verified with Python 3.14.3; no dependencies were installed. Run `python3 -m unittest discover -s tests -v` from the root. Tests/fixtures validate accounting, schema and timer behavior only. `docs/measurement.md` defines the interfaces and synthetic report command. There is no model/service smoke command or established lint tool until the actual baseline tooling is inspected.
+Use the locked Python 3.12 environment: `uv sync --frozen`, `uv run pytest -q`, `uv run ruff check .`. Full tests use isolation doubles plus an optional real-artifact integration check after building. The standard-library-only subset is `python3 -m unittest discover -s tests -p test_measurement.py -v`. Do not call synthetic tests accuracy/latency evidence.
+
+`uv run compact-vision build` downloads public data/weights and rebuilds the head/export/validation pipeline in a fresh artifact directory. `trace`, `benchmark`, `study` and explicit `evaluate --split test` produce the actual evidence. Inspect `docs/evaluation.md` and the saved frozen protocol before interpreting reports. The build is now authorized; waiting for the other computer is not a dependency. Keep default serving FP32 unless a separate justified deployment decision changes it. The retained INT8 experiment is classifier-only with a float convolution backbone, and must be labeled as partial INT8.

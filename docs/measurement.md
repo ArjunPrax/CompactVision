@@ -2,14 +2,14 @@
 
 This independently written component validates recorded client outcomes and sequential server-stage traces. It does not load a model, generate traffic or replace the completed baseline. Integration into that baseline and the controlled threading comparison remain pending source/artifact access.
 
-The implementation uses Python's standard library. It has been checked with Python 3.14.3; no dependencies were installed. Run commands from the repository root.
+These original reporting helpers use Python's standard library and were initially checked with Python 3.14.3. The rebuilt classifier/service uses the locked Python 3.12 environment and additional packages; its full checks are `uv run pytest -q` and `uv run ruff check .`. Run commands from the repository root.
 
 ## Check the implementation
 
 This command runs contract/arithmetic tests, including invalid records. It performs no model inference or load test:
 
 ```sh
-python3 -m unittest discover -s tests -v
+python3 -m unittest discover -s tests -p test_measurement.py -v
 ```
 
 This command reads deliberately fabricated fixture records, validates them and prints JSON to the terminal. It does not measure a live system or create result files:
@@ -95,3 +95,5 @@ Trace IDs must match sent client requests, and each can have only one server tra
 - Within each sequential trace, `unattributed = trace duration - sum(stage durations)`. This includes uncovered local work and timer gaps; it is **not automatically queue time**. No client/server timestamp subtraction or percentile subtraction is performed, and stage p95s are not summed.
 
 Use the improvement plan's fixed-model/current-versus-candidate, paired-repeat evaluation later. This reporting layer alone does not establish a speedup, identify a bottleneck or complete the ownership contribution.
+
+Raw JSONL may be gzip-compressed (`.jsonl.gz`); the reader supports both. The live integration in `compact_vision/service.py` measures executor wait explicitly with the same process clock and aligns engine stages through `Trace.origin_ns`; this is not cross-machine clock subtraction. `COMPACT_VISION_TRACING=0` disables stage collection/trace-header emission for the predeclared overhead diagnostic; common wrapper/clock calls remain.

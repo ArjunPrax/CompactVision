@@ -19,7 +19,10 @@ ARTIFACTS = Path("models/demo")
 pytestmark = pytest.mark.skipif(not (ARTIFACTS / "model.fp32.onnx").exists(), reason="build real local artifacts first")
 
 
-def test_real_export_and_service_predictions_match_for_the_same_encoded_input():
+@pytest.mark.parametrize("served_backend", ["fp32", "int8"])
+def test_real_export_and_service_predictions_match_for_the_same_encoded_input(served_backend):
+    if served_backend == "int8" and not (ARTIFACTS / "model.int8.onnx").exists():
+        pytest.skip("no supported local partial-INT8 artifact")
     rng = np.random.default_rng(53)
     stream = io.BytesIO()
     Image.fromarray(rng.integers(0, 256, (51, 37, 3), dtype=np.uint8)).save(stream, format="PNG")
@@ -32,12 +35,13 @@ def test_real_export_and_service_predictions_match_for_the_same_encoded_input():
     wrong_input = np.ascontiguousarray(np.asarray(decode_image(encoded).resize((224, 224)), dtype=np.float32).transpose(2, 0, 1)[None] / 255)
     wrong_logits = make_backend(ARTIFACTS, "fp32").predict(wrong_input)
     assert not np.allclose(wrong_logits, reference, atol=config["parity_atol"], rtol=config["parity_rtol"])
-    with TestClient(create_app()) as client:
+    served_logits = make_backend(ARTIFACTS, served_backend).predict(inputs)
+    with TestClient(create_app(backend=served_backend)) as client:
         health = client.get("/health").json()
         assert health["runtime"]["providers"] == ["CPUExecutionProvider"]
         response = client.post("/predict", content=encoded, headers={"content-type": "image/png", "x-request-id": "real-artifact-test"})
         assert response.status_code == 200
-        assert response.json()["predictions"][0]["index"] == int(exported.argmax(1)[0])
+        assert response.json()["predictions"][0]["index"] == int(served_logits.argmax(1)[0])
         trace = json.loads(response.headers["x-compact-trace"])
         validate_trace(trace)
         assert {"decode", "preprocess", "model", "executor_wait", "serialize"} <= {stage["name"] for stage in trace["stages"]}

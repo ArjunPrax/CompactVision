@@ -89,6 +89,8 @@ def test_api_session_lifetime_errors_and_real_observable_trace_contract():
     app = create_app(engine_factory=FakeEngine)
     with TestClient(app) as client:
         assert client.get("/health").json()["ready"]
+        body = client.get("/openapi.json").json()["paths"]["/predict"]["post"]["requestBody"]
+        assert body["content"]["image/png"]["schema"]["format"] == "binary"
         for _ in range(2):
             response = client.post("/predict", content=image_bytes(), headers={"content-type": "image/png", "x-request-id": "test-image"})
             assert response.status_code == 200

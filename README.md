@@ -15,6 +15,27 @@ This is a ten-class public-image demonstration, **not workshop-parts recognition
 
 See [STATUS.md](STATUS.md) for verified progress/results, [IMPROVEMENT_PLAN.md](IMPROVEMENT_PLAN.md) for the contribution and frozen decision rules, and [ATTRIBUTION.md](ATTRIBUTION.md) for provenance. Synthetic fixtures are accounting checks, never inference results.
 
+## Verified native result
+
+The rebuilt FP32 model scored **1,738/2,000 (86.9%)** on the frozen test subset. On this M4 Pro/battery/loopback workload, changing ORT intra-op threads from one to four reduced nominal median client p95 from **6.236 ms to 4.973 ms (20.3%)** across three paired repeats, with no failures or generator drops. This changes CPU parallelism, not energy efficiency; new machines/workloads need their own check. See [the complete measured report](docs/RESULTS.md) for counts, variation, stage evidence, rejected quantization and limits.
+
+For this measured local configuration, use `uv run compact-vision serve --threads 4`. The conservative one-thread baseline remains available for reproduction. Docker packaging is unverified on this host; no Docker engine is installed.
+
+## Request path
+
+```mermaid
+flowchart LR
+    A[Encoded JPEG or PNG] --> B[Body read and byte limit]
+    B --> C[Observed executor wait]
+    C --> D[Materialized RGB decoding]
+    D --> E[Shared resize crop normalize]
+    E --> F[Reusable ORT CPU session]
+    F --> G[Class scores and JSON response]
+    G --> H[Client receives complete response]
+```
+
+Startup loads the session once. Server traces cover the declared handler/worker intervals; earlier dispatch and final network send remain outside that server boundary. Training, parity and serving share the input transformation in `compact_vision/preprocessing.py`.
+
 ## Run locally
 
 Requires `uv` and Python 3.12. Run from the repository root. This command creates an isolated environment and installs locked packages:
@@ -81,3 +102,5 @@ docker run --rm -p 127.0.0.1:8000:8000 -v "$PWD/models/demo:/models:ro" compact-
 ## Ownership and learning
 
 The personal contribution is checked shared preprocessing, honest stage/outcome accounting and a defensible configuration decision, not invention of MobileNet/ONNX/quantization. Private lessons in Git-ignored `.learning/` start with terminal/Python/image basics, proceed through actual source and experiments, and keep exercises, progressive hints and answer checks separate. They are privately backed up and do not accompany a clone. Public configs, definitions, commands and selected evidence remain outside that folder. No employer/lab assets are used.
+
+To verify saved raw accounting and regenerate the results report without training or generating traffic: `uv run python -m scripts.report_results`.

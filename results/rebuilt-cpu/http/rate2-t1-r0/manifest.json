@@ -1,0 +1,429 @@
+{
+  "schema_version": 1,
+  "run_id": "rate2-t1-r0",
+  "evidence_kind": "measured",
+  "client_clock": "monotonic_offsets_ns",
+  "window": {
+    "start_ns": 0,
+    "end_ns": 60000000000
+  },
+  "observation_end_ns": 60003913625,
+  "scheduled_requests": 9168,
+  "timeout_ns": 5000000000,
+  "reproducibility": {
+    "model_sha256": "09b26ea85cf36be9b931b8a77c93a6d151f1be82cbb120df80f321afab76b87b",
+    "inputs_sha256": "71b0f7b3bf5d7f68b7cc6e8acf5973a0c17bb943b1efdc105fb9cb561d76367a",
+    "configuration": {
+      "batch_size": 1,
+      "service_workers": 1,
+      "runtime_threads": {
+        "intra_op": 1,
+        "inter_op": 1
+      },
+      "other_thread_pools": {
+        "inference_executor": 1
+      },
+      "runtime_options": {
+        "backend": "onnxruntime",
+        "version": "1.31.1",
+        "providers": [
+          "CPUExecutionProvider"
+        ],
+        "intra_op_threads": 1,
+        "inter_op_threads": 1,
+        "execution_mode": "sequential",
+        "graph_optimization": "all",
+        "allow_spinning": false,
+        "trace_collection": true
+      }
+    },
+    "environment": {
+      "os": "macOS-26.5.2-arm64-arm-64bit",
+      "architecture": "arm64",
+      "python": "3.12.12",
+      "hardware": "Apple M4 Pro; 25769803776",
+      "logical_cpus": 12,
+      "packages": {
+        "torch": "2.15.0",
+        "torchvision": "0.29.2",
+        "onnx": "1.23.2",
+        "onnxruntime": "1.31.1",
+        "numpy": "2.5.4",
+        "pillow": "12.3.0",
+        "fastapi": "0.162.0",
+        "uvicorn": "0.54.0"
+      },
+      "execution_context": "native host (no container)",
+      "power_source": "Now drawing from 'Battery Power'",
+      "thread_environment": {
+        "OMP_NUM_THREADS": null,
+        "MKL_NUM_THREADS": null,
+        "OPENBLAS_NUM_THREADS": null
+      },
+      "runtime": "1.31.1",
+      "provider": [
+        "CPUExecutionProvider"
+      ],
+      "load_generator": "same-host loopback httpx asyncio; shares CPU budget"
+    },
+    "code_revision": "54e092a35af0e96de4ef714bc5af480a3c100992",
+    "code": {
+      "revision": "54e092a35af0e96de4ef714bc5af480a3c100992",
+      "tracked_patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_files_sha256": {
+        "benchmarks/__init__.py": "079d0d5019f8e3a787f8e3047e54087d32ca4a2077d1d20ae19c172aaf240451",
+        "benchmarks/report.py": "3bf76e7b43e8accbe91f29728d552b008a32b2812afa10f6cbc7c63752b69f49",
+        "benchmarks/timing.py": "3821a1eb2ec289f14e9b0b7473896713c16e9b5ff0d05416098ff540bcaf33a4",
+        "compact_vision/__init__.py": "0a7169a63e79d7f378a1d8e7162285eb05de1e74d77914ab9582f648add833eb",
+        "compact_vision/cli.py": "6a67837c02378254bb7bcaa6864a4cd6fa27aa8ec7a86a6d48b83fc452a34752",
+        "compact_vision/common.py": "c364cba8607f11a3bda3812028cf35e2d220e5c73d319f344034b6b8c48a1d8d",
+        "compact_vision/data.py": "cfeb0b9ad120a070615f6495516afc8e3759a4ae438751940eae87fd4ad8e778",
+        "compact_vision/evaluation.py": "f1878f380e3b79e6737242118c3944d0e99124c5524904b673a0158c9578ef5d",
+        "compact_vision/experiment.py": "c732400e86d59f06914128f017a35a9e16fe36a7bcff0b3bff930a817cdc9454",
+        "compact_vision/exporting.py": "f2d1562acb27e3c1c5041bbff93d4ba0e6e1b22efb515044aa21d48ea163b4dc",
+        "compact_vision/model.py": "c9c9ec5f3654417e1e36354a23be1f54c85e5246f01c293c1fdf56643b2f1af5",
+        "compact_vision/preprocessing.py": "d072fb921b25aa3bd800db17cd4dee9de88ba0847397e37fdcac4155ea80462a",
+        "compact_vision/runtime.py": "4ed185812fbf70080fa7902a345bf76cefb4e332b21c51adc97b33663194c190",
+        "compact_vision/service.py": "df66b09af576d93fd04cb16d9d1b885b6b7b460090094c0c82e5f0cfe94625bf",
+        "compact_vision/training.py": "0dd746fc3b3b3044e3df0d07ef1c3a081453f88b0f29ea52d107e536d1946823",
+        "configs/demo.json": "1c1585fff698217f9e36aaf10698b2b9465276934bce1529de394370960ed9ff",
+        "pyproject.toml": "6b4726e977b3218100edce54d48ed43dc1979cbca219898e47d6cba4170c0973",
+        "uv.lock": "f4f79c83dd57f697085cb8f189d53b0eaa39118c76929d53a41068334c28cd32"
+      },
+      "untracked_source_files": {}
+    },
+    "warmup_calls": 50,
+    "offered_rate_rps": 152.79,
+    "max_in_flight": 32,
+    "retry_policy": "disabled",
+    "timing_boundaries": {
+      "client": "immediately before httpx post to complete response receipt; loopback transport included",
+      "server": "handler entry through JSON response body construction; excludes framework dispatch before handler, timing-header construction, ASGI send and network",
+      "executor_wait": "same-process perf_counter_ns from dispatch enqueue to worker entry; explicit observed wait",
+      "model": "ready numpy float32 tensor through completed ORT CPU output"
+    },
+    "input_manifest": [
+      {
+        "official_train_index": 24409,
+        "true_class_index": 2,
+        "png_sha256": "e5445843c48db82efd5631609ac98a7e59b704396a4c724c9ec62ec167ab2f88",
+        "bytes": 1760,
+        "dimensions": [
+          32,
+          32
+        ]
+      },
+      {
+        "official_train_index": 25347,
+        "true_class_index": 4,
+        "png_sha256": "94b90d89d26fc6f7f661f6b6193ecb5c1cb65a7ad9baae60ce0d4d0ed9c393ef",
+        "bytes": 2164,
+        "dimensions": [
+          32,
+          32
+        ]
+      },
+      {
+        "official_train_index": 44551,
+        "true_class_index": 5,
+        "png_sha256": "1dbafa29cd0c9b8cd5e2f383b7f6663e36a223fbbdcdc8709f8e36e367718828",
+        "bytes": 2456,
+        "dimensions": [
+          32,
+          32
+        ]
+      },
+      {
+        "official_train_index": 25011,
+        "true_class_index": 8,
+        "png_sha256": "d86cc482be96409dd3e2d784ec662bd050089614b0966edd720dfb5baffe4c29",
+        "bytes": 2124,
+        "dimensions": [
+          32,
+          32
+        ]
+      },
+      {
+        "official_train_index": 46325,
+        "true_class_index": 3,
+        "png_sha256": "8f126130200600af2f612ca8b6d01c689e85a5812aa944ff4b0d35782213d91d",
+        "bytes": 2241,
+        "dimensions": [
+          32,
+          32
+        ]
+      },
+      {
+        "official_train_index": 14927,
+        "true_class_index": 1,
+        "png_sha256": "d5ecdd854413a32f199ce240afc9a07f5fca069b65bfd335dc7b7d849ea5222e",
+        "bytes": 2397,
+        "dimensions": [
+          32,
+          32
+        ]
+      },
+      {
+        "official_train_index": 19798,
+        "true_class_index": 6,
+        "png_sha256": "7d3a2458dbb0fe05b2198a432980606dfa8505d90c7d1e5aeb7e51c4a1ee2dad",
+        "bytes": 2498,
+        "dimensions": [
+          32,
+          32
+        ]
+      },
+      {
+        "official_train_index": 39425,
+        "true_class_index": 7,
+        "png_sha256": "fff69f639bd802df2341415cb9a5a62a88dde1b2283db3978a02a238cac8d853",
+        "bytes": 2283,
+        "dimensions": [
+          32,
+          32
+        ]
+      },
+      {
+        "official_train_index": 41345,
+        "true_class_index": 0,
+        "png_sha256": "fb109839cdcf2684844d409a05fe162a8d80016b6959e6fd6ba6418336fb6c5e",
+        "bytes": 1882,
+        "dimensions": [
+          32,
+          32
+        ]
+      },
+      {
+        "official_train_index": 44009,
+        "true_class_index": 9,
+        "png_sha256": "559fe81dc9eb915b8085b47d13ec272e33e2fa1188697632403739be0317384b",
+        "bytes": 2417,
+        "dimensions": [
+          32,
+          32
+        ]
+      },
+      {
+        "official_train_index": 20306,
+        "true_class_index": 4,
+        "png_sha256": "3fe0ca2a4c1a360f3bc2c90cfaef0e1c8818a07286b4d6fcb8fa0cc0847c1184",
+        "bytes": 2607,
+        "dimensions": [
+          32,
+          32
+        ]
+      },
+      {
+        "official_train_index": 34138,
+        "true_class_index": 1,
+        "png_sha256": "117d9936b8d1c61d8eed4df5b06fcc9dd772fade49bb59d2efc7cd31c6f56e4e",
+        "bytes": 2526,
+        "dimensions": [
+          32,
+          32
+        ]
+      },
+      {
+        "official_train_index": 15499,
+        "true_class_index": 5,
+        "png_sha256": "3a5c1c9d39f4bdcd5a091171f237aa3ba7ca34f6bd15abdd71fa4b9740b1920a",
+        "bytes": 2295,
+        "dimensions": [
+          32,
+          32
+        ]
+      },
+      {
+        "official_train_index": 5355,
+        "true_class_index": 6,
+        "png_sha256": "28a68dcc3373cf9af2421ac3d3dfb3366facd07d49cbcfbe0970f174f129ebc7",
+        "bytes": 2566,
+        "dimensions": [
+          32,
+          32
+        ]
+      },
+      {
+        "official_train_index": 36961,
+        "true_class_index": 3,
+        "png_sha256": "8e306f3319e4d3a6c73643c74f882dd4c7ca515f1db7a30596681c2d04e42a72",
+        "bytes": 2232,
+        "dimensions": [
+          32,
+          32
+        ]
+      },
+      {
+        "official_train_index": 38739,
+        "true_class_index": 5,
+        "png_sha256": "5129b90a1c056d26d126d453068d9be292ffdd85b8ee8a0b81ff225d447657c1",
+        "bytes": 2306,
+        "dimensions": [
+          32,
+          32
+        ]
+      },
+      {
+        "official_train_index": 48588,
+        "true_class_index": 4,
+        "png_sha256": "08f7c422a4b78bb674b6255747809d8924a975f9a3bdd893db8d81a2cf572b7f",
+        "bytes": 2036,
+        "dimensions": [
+          32,
+          32
+        ]
+      },
+      {
+        "official_train_index": 36998,
+        "true_class_index": 6,
+        "png_sha256": "3e0e7ef324b0f007b841698bdfb9c02a012bd14f6ef3c90727de8566b8086250",
+        "bytes": 2715,
+        "dimensions": [
+          32,
+          32
+        ]
+      },
+      {
+        "official_train_index": 6875,
+        "true_class_index": 4,
+        "png_sha256": "afd31de85a8ec0ae718e70a107f5a3486f11c77e6ddce73b17d074bf03b1d710",
+        "bytes": 2667,
+        "dimensions": [
+          32,
+          32
+        ]
+      },
+      {
+        "official_train_index": 23260,
+        "true_class_index": 1,
+        "png_sha256": "4bd0375d32fe925f8d0e4445a5bbc7f467afa055dfbd20d136ebd2462acab5fe",
+        "bytes": 2136,
+        "dimensions": [
+          32,
+          32
+        ]
+      },
+      {
+        "official_train_index": 463,
+        "true_class_index": 2,
+        "png_sha256": "e1cba3954e3b593bce167b158ace7da220a6ba4ad0e602d87a412d240ea58409",
+        "bytes": 2393,
+        "dimensions": [
+          32,
+          32
+        ]
+      },
+      {
+        "official_train_index": 20498,
+        "true_class_index": 4,
+        "png_sha256": "c0df6447eba4c5c2975462a58f081b5854440a2f864834b7cbcfe815a448436d",
+        "bytes": 1971,
+        "dimensions": [
+          32,
+          32
+        ]
+      },
+      {
+        "official_train_index": 19643,
+        "true_class_index": 4,
+        "png_sha256": "21badcc8692ad49b79bcee819368a5455c21242489010f0bf6f7576ab370ae7f",
+        "bytes": 2175,
+        "dimensions": [
+          32,
+          32
+        ]
+      },
+      {
+        "official_train_index": 28422,
+        "true_class_index": 2,
+        "png_sha256": "918cf5194350ad0e71e30fcc5cd1d54455ce5653353a772419f2ffa4e07709de",
+        "bytes": 2293,
+        "dimensions": [
+          32,
+          32
+        ]
+      },
+      {
+        "official_train_index": 1764,
+        "true_class_index": 7,
+        "png_sha256": "2a4d0d3eeadab9fcda0cc8b859b19c466e4cd6981edde1cb02654554fe4706d1",
+        "bytes": 2513,
+        "dimensions": [
+          32,
+          32
+        ]
+      },
+      {
+        "official_train_index": 15848,
+        "true_class_index": 0,
+        "png_sha256": "f3b51b3e372fd2e6a3a3818467e8b547a3ee25fc031e46e5a8384e5e9df16f8d",
+        "bytes": 1974,
+        "dimensions": [
+          32,
+          32
+        ]
+      },
+      {
+        "official_train_index": 20979,
+        "true_class_index": 7,
+        "png_sha256": "584c20b372e63340a04fb8a6236f1c1e766843b5b29f1305bc175bd335c8c79b",
+        "bytes": 2335,
+        "dimensions": [
+          32,
+          32
+        ]
+      },
+      {
+        "official_train_index": 46884,
+        "true_class_index": 4,
+        "png_sha256": "d2d52b8e55f1fc2eaa1ab0a485f324a738fd9c1c3b4bbf0055eee207f2a6c4f0",
+        "bytes": 2475,
+        "dimensions": [
+          32,
+          32
+        ]
+      },
+      {
+        "official_train_index": 7491,
+        "true_class_index": 6,
+        "png_sha256": "65ce52b1d78f7bf8e27725c739f9d3dc06d9ae2087d8bdaf00fe136bd6de83c8",
+        "bytes": 2360,
+        "dimensions": [
+          32,
+          32
+        ]
+      },
+      {
+        "official_train_index": 26417,
+        "true_class_index": 4,
+        "png_sha256": "147c8efa84fc326927bc8468eefa9078c68bfe2c9b2f9a8dcf99185a029f864e",
+        "bytes": 2541,
+        "dimensions": [
+          32,
+          32
+        ]
+      },
+      {
+        "official_train_index": 35107,
+        "true_class_index": 2,
+        "png_sha256": "192469d2c7d10b415bcdf30a7fa201ba494561f264a3d2fb5589768ee98f9d8e",
+        "bytes": 2276,
+        "dimensions": [
+          32,
+          32
+        ]
+      },
+      {
+        "official_train_index": 1088,
+        "true_class_index": 5,
+        "png_sha256": "f5f6bcc2f06dde6b4c8ca194298e29994d6026b3c9951f479983d3c21cd38ec2",
+        "bytes": 1981,
+        "dimensions": [
+          32,
+          32
+        ]
+      }
+    ],
+    "split_manifest_sha256": "b385d8fe49bcdf8cb5e24dfb3cc81bed7c5b33e201e52211c907348b388f95c3"
+  }
+}

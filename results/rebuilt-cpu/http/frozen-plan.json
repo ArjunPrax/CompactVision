@@ -1,0 +1,38 @@
+{
+  "baseline_threads": 1,
+  "candidate_threads": 4,
+  "frozen_offered_rates_rps": [
+    69.45,
+    125.01,
+    152.79
+  ],
+  "rate_basis": "development pilot serial-active median stage estimate; not measured sustainable capacity",
+  "selection": "lowest success p95 at fixed 30 requests/s development pilot among candidates",
+  "acceptance": "nominal (lowest-rate) median p95 improves at least 5%, candidate repeat p95 range lies below baseline range, success/offered does not fall by >0.5pp; neither nominal condition has generator drops or p95 send lag above its arrival interval",
+  "quality": "same FP32 graph/input contract; no quality-driven thread tuning",
+  "code": {
+    "revision": "54e092a35af0e96de4ef714bc5af480a3c100992",
+    "tracked_patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "source_files_sha256": {
+      "benchmarks/__init__.py": "079d0d5019f8e3a787f8e3047e54087d32ca4a2077d1d20ae19c172aaf240451",
+      "benchmarks/report.py": "3bf76e7b43e8accbe91f29728d552b008a32b2812afa10f6cbc7c63752b69f49",
+      "benchmarks/timing.py": "3821a1eb2ec289f14e9b0b7473896713c16e9b5ff0d05416098ff540bcaf33a4",
+      "compact_vision/__init__.py": "0a7169a63e79d7f378a1d8e7162285eb05de1e74d77914ab9582f648add833eb",
+      "compact_vision/cli.py": "6a67837c02378254bb7bcaa6864a4cd6fa27aa8ec7a86a6d48b83fc452a34752",
+      "compact_vision/common.py": "c364cba8607f11a3bda3812028cf35e2d220e5c73d319f344034b6b8c48a1d8d",
+      "compact_vision/data.py": "cfeb0b9ad120a070615f6495516afc8e3759a4ae438751940eae87fd4ad8e778",
+      "compact_vision/evaluation.py": "f1878f380e3b79e6737242118c3944d0e99124c5524904b673a0158c9578ef5d",
+      "compact_vision/experiment.py": "c732400e86d59f06914128f017a35a9e16fe36a7bcff0b3bff930a817cdc9454",
+      "compact_vision/exporting.py": "f2d1562acb27e3c1c5041bbff93d4ba0e6e1b22efb515044aa21d48ea163b4dc",
+      "compact_vision/model.py": "c9c9ec5f3654417e1e36354a23be1f54c85e5246f01c293c1fdf56643b2f1af5",
+      "compact_vision/preprocessing.py": "d072fb921b25aa3bd800db17cd4dee9de88ba0847397e37fdcac4155ea80462a",
+      "compact_vision/runtime.py": "4ed185812fbf70080fa7902a345bf76cefb4e332b21c51adc97b33663194c190",
+      "compact_vision/service.py": "df66b09af576d93fd04cb16d9d1b885b6b7b460090094c0c82e5f0cfe94625bf",
+      "compact_vision/training.py": "0dd746fc3b3b3044e3df0d07ef1c3a081453f88b0f29ea52d107e536d1946823",
+      "configs/demo.json": "1c1585fff698217f9e36aaf10698b2b9465276934bce1529de394370960ed9ff",
+      "pyproject.toml": "6b4726e977b3218100edce54d48ed43dc1979cbca219898e47d6cba4170c0973",
+      "uv.lock": "f4f79c83dd57f697085cb8f189d53b0eaa39118c76929d53a41068334c28cd32"
+    },
+    "untracked_source_files": {}
+  }
+}

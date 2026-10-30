@@ -1,0 +1,17 @@
+/.learning/
+/COMPACT_VISION_OWNERSHIP_PLAN_2026-10-29.md
+/COMPACT_VISION_LEARNING_MAP_2026-10-29.md
+/.venv/
+/venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.DS_Store
+/data/
+/models/
+/work/
+/configs/local.*
+.env
+.env.*
+!.env.example

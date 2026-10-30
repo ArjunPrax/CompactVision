@@ -12,8 +12,8 @@ This is a proposed contribution. The completed baseline is not in this checkout,
 | --- | --- |
 | Upstream | TorchVision models/weights/transforms and ONNX Runtime inference/quantization infrastructure; exact adopted versions/examples remain to be identified |
 | Existing personal baseline | Reported complete by the owner on another computer; implementation and saved experiment configuration not inspected here |
-| This checkout | Repository setup, operating documentation and locally ignored beginner curriculum |
-| Proposed technical contribution | Missing stage measurements, controlled thread experiment, reproducible decision and explanation; not implemented or measured yet |
+| This checkout | Repository setup, documentation/private curriculum and independent sequential-stage timing plus outcome/latency reporting helpers |
+| Proposed technical contribution | Helpers implemented and tested with synthetic records; actual service instrumentation, controlled thread experiment and measured decision remain pending baseline integration |
 
 Changing names, adding a wrapper or listing more frameworks is not the contribution. The contribution earns its place through an unanswered practical question, a fair experiment and a technical decision supported by inspectable evidence. Mixed or negative results are acceptable.
 
@@ -52,6 +52,8 @@ Excluded: retraining, architecture search, new dataset collection, GPU port, dyn
 Stop after one development sweep and one frozen paired evaluation with a defensible decision and explanation. Allow a targeted repair/repeat for a demonstrated measurement fault. Do not retune on final results or chase a promised percentage. Missing baseline assets stop dependent implementation; useful independent documentation may proceed.
 
 ## Planned public evidence
+
+The first independent component is implemented in `benchmarks/timing.py` and `benchmarks/report.py`, with a documented versioned record schema and hand-calculated synthetic accounting tests. This prepares part of milestone 2 without marking its actual-service acceptance gate complete. It does not bypass milestone 0, select a replacement baseline or establish any inference result. See [measurement interfaces](docs/measurement.md).
 
 Adapt the existing repository's tooling and directories after transfer. Keep timing definitions, exact commands/configuration, attribution and selected permitted result records versioned. No results are filled in yet.
 

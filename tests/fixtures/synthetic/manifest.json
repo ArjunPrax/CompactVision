@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "run_id": "synthetic-accounting-only",
+  "evidence_kind": "synthetic",
+  "client_clock": "monotonic_offsets_ns",
+  "window": {"start_ns": 0, "end_ns": 10000000000},
+  "observation_end_ns": 12000000000,
+  "scheduled_requests": 7,
+  "timeout_ns": 5000000000,
+  "reproducibility": {}
+}

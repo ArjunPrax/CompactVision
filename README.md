@@ -4,9 +4,11 @@ A personal study of compact vision inference, correctness and CPU request latenc
 
 ## Current state
 
-This repository currently contains the ownership-pass documentation and working protocol. The owner reports a completed baseline on another computer; that implementation, checkpoints, dataset manifests and result logs have not been transferred into this checkout. There is no runnable classifier or inference service here yet. This does not change the reported completion of the original work.
+This repository contains the ownership-pass documentation and independently written measurement helpers: sequential request-stage timing and validated outcome/latency reporting. The owner reports a completed baseline on another computer; that implementation, checkpoints, dataset manifests and result logs have not been transferred into this checkout. There is no runnable classifier or inference service here yet. This does not change the reported completion of the original work.
 
 See [STATUS.md](STATUS.md) for verified progress and the next action. Do not interpret repository setup or learning exercises as measured inference results.
+
+The [measurement guide](docs/measurement.md) documents the implemented interfaces, record schema and commands. Its synthetic fixtures test arithmetic and accounting only; they are not performance results. The helpers use the Python standard library and require no dependency installation.
 
 ## Intended contribution
 

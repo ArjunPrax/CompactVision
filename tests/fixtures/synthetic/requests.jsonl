@@ -1,0 +1,7 @@
+{"request_id":"a","scheduled_ns":0,"sent_ns":0,"finished_ns":1000000000,"outcome":"success"}
+{"request_id":"b","scheduled_ns":9000000000,"sent_ns":9000000000,"finished_ns":11000000000,"outcome":"success"}
+{"request_id":"c","scheduled_ns":1000000000,"sent_ns":1000000000,"finished_ns":6000000000,"outcome":"timeout"}
+{"request_id":"d","scheduled_ns":2000000000,"sent_ns":2000000000,"finished_ns":2100000000,"outcome":"rejected"}
+{"request_id":"e","scheduled_ns":3000000000,"sent_ns":3000000000,"finished_ns":3200000000,"outcome":"error"}
+{"request_id":"f","scheduled_ns":4000000000,"sent_ns":null,"finished_ns":null,"outcome":"generator_drop"}
+{"request_id":"g","scheduled_ns":8000000000,"sent_ns":9000000000,"finished_ns":null,"outcome":"outstanding"}

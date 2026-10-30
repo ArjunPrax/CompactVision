@@ -7,6 +7,7 @@ This module does not generate traffic, load a model or claim export/task correct
 import argparse
 from collections import Counter, defaultdict
 import hashlib
+import gzip
 import json
 import math
 from pathlib import Path
@@ -247,7 +248,8 @@ def load_json(path):
 
 def load_jsonl(path):
     rows = []
-    with Path(path).open() as stream:
+    opener = gzip.open if str(path).endswith(".gz") else open
+    with opener(path, "rt", encoding="utf-8") as stream:
         for number, line in enumerate(stream, 1):
             if line.strip():
                 try:

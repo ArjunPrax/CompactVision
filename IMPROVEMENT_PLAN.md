@@ -1,63 +1,39 @@
-# Ownership and improvement pass
+# Rebuild and ownership improvement
 
-## Technical question
+## Scope and contribution
 
-For the existing classifier and its real input contract, where does batch-one CPU request time go, and does one alternative ONNX Runtime intra-op thread setting improve the relevant operating point without changing correctness or hiding overload?
+On 30 October 2026 the owner authorized a full local rebuild because the earlier source cannot be obtained. This supersedes transfer-dependent planning without withdrawing the earlier completion report. This build has independent artifacts, provenance and results.
 
-This is a proposed contribution. The completed baseline is not in this checkout, so source-specific scope and effort remain unresolved. If it already contains this study, recover that evidence and choose a different justified gap before changing code.
-
-## Ownership boundaries
-
-| Layer | Status and attribution |
-| --- | --- |
-| Upstream | TorchVision models/weights/transforms and ONNX Runtime inference/quantization infrastructure; exact adopted versions/examples remain to be identified |
-| Existing personal baseline | Reported complete by the owner on another computer; implementation and saved experiment configuration not inspected here |
-| This checkout | Repository setup, documentation/private curriculum and independent sequential-stage timing plus outcome/latency reporting helpers |
-| Proposed technical contribution | Helpers implemented and tested with synthetic records; actual service instrumentation, controlled thread experiment and measured decision remain pending baseline integration |
-
-Changing names, adding a wrapper or listing more frameworks is not the contribution. The contribution earns its place through an unanswered practical question, a fair experiment and a technical decision supported by inspectable evidence. Mixed or negative results are acceptable.
+The baseline is ImageNet-pretrained TorchVision MobileNetV3-Small, with only the last linear head trained for CIFAR-10, exported to ONNX and served on CPU. This public-image demonstration is not workshop-parts recognition. The ownership question is: **where does a batch-one request spend time, and does one alternative thread setting improve it without changing correctness or hiding overload?** A static INT8 experiment supplies separate quality/size/backend context and need not replace FP32.
 
 ## Milestones and acceptance
 
-| Milestone | Work | Acceptance |
-| --- | --- | --- |
-| 0. Recover baseline | Preserve original history/local changes; read instructions; bind model/data/transforms/export/quantizer/service/benchmark/environment/attribution to real locations | Actual source/artifact map and one useful saved baseline record, with unknowns retained; estimate effort only now |
-| 1. Trace correctness | Follow a permitted image from bytes to class output; validate class order, deterministic evaluation/serving transform and export parity | Actual shapes/dtypes/values recorded; fixed artifact/input identity and justified FP32 tolerance; no unexplained mismatch |
-| 2. Explain stages | Reuse or extend the existing runner and minimal timing hooks; distinguish decode, preprocess, runtime, response and observed wait | Per-request intervals reconcile with documented residuals; instrumentation overhead checked; failures retained |
-| 3. Select one alternative | Development-only sweep of current intra-op setting versus 1, 2, 4 where supported; hold other thread pools, service workers, batch, input and model fixed | One candidate selected by a declared rule, then frozen before final evaluation |
-| 4. Paired evaluation | Current versus candidate on the same host, inputs and traffic; repeated measurements with outcome accounting | Correctness preserved; p50/p95 and successful throughput accompanied by variation, timeouts/errors/rejections and raw evidence; keep/change decision |
-| 5. Explain independently | One-page explainer, architecture from memory, reproduce a metric and answer the twelve questions aloud | Clear attribution, justified decisions, three concrete failure modes and next experiment; private answers remain private |
+| Milestone | Acceptance |
+| --- | --- |
+| Rebuild baseline | Fixed manifests; 10,000 training, 2,000 validation and 2,000 official-test images. Train head for 20 epochs; select by validation correct/loss only. |
+| Input/export correctness | One transform checked against prescribed upstream transform; FP32 numeric parity on 32 validation images and dynamic batch two. |
+| Quantization applicability | Static per-channel S8S8 QDQ, MinMax over 128 training-only images; graph/types/kernel/provider evidence and separate task-quality guard. |
+| Explain stages | Real decode/preprocess/model/postprocess plus body read, observable executor wait and response-body serialization; exclusions declared. |
+| Freeze candidate | Development sweep 1/2/4 CPU threads; choose one nonbaseline alternative on a fixed offered-rate pilot; save rates/rule before final runs. |
+| Evaluate | Three fresh-process model repeats; three paired HTTP repeats at three fixed offered rates, with tails, outcome counts, generator validity and variation. |
+| Learn independently | Actual source/input trace, small memory reconstruction, prediction-first experiments, one-page explainer and twelve oral questions; learner writes personal answers. |
 
-## Evaluation contract
+## Predeclared evaluation contract
 
-- Reuse existing artifacts and targeted evidence; do not automatically rebuild, retrain or repeat the entire baseline.
-- Compare identical model/input/configuration lineage on one named host. Match batch and CPU budgets and explicitly set provider/options. Keep native/container/emulated results separate.
-- Preserve data separation: training for fitting, representative training-only inputs for calibration, development inputs for choosing settings, untouched test inputs for final quality. Record inherited limitations; do not silently reshuffle splits.
-- Use labeled classification quality only if that is the actual task: correct/total, top-1 accuracy and relevant per-class failures. Declare acceptable INT8 quality loss before final scoring. A thread change should not introduce unexplained prediction differences.
-- FP32 parity uses identical preprocessed tensors, eval mode, output order, shape/finiteness and numerical errors with a justified frozen tolerance. Matching top-1 labels alone is insufficient.
-- Model-only timing excludes decoding/preprocessing/session construction. Request timing uses original encoded bytes. Measure lazy decoding where pixels are materialized. Do not label client-minus-server residual or subtracted p95s as queue time.
-- Proposed model protocol: 50 untimed warmups, 1,000 timed batch-one calls, three fresh-process repeats; verify adequacy on development inputs before freezing. These are protocol proposals, not measured counts.
-- Final HTTP matrix is one current/candidate pair at three fixed offered rates below/near/modestly above the development capacity knee. Record actual send schedule, send lag, in-flight cap, timeout/retry/drain policy and generator placement. Closed-loop concurrency alone cannot establish offered-load capacity.
-- Proposed request protocol: aim for 2,000 scheduled arrivals and at least 60 seconds per condition/repeat, with a 180-second cap and bounded drain; report realized counts and label sparse p95 estimates exploratory. Three paired repeats, alternating order. No p99 claims on sparse data.
-- Count offered, sent, generator-dropped, successful, rejected, errored, timed-out and outstanding requests. Successful response latency must accompany failures. Late completion does not erase a client timeout. Specify throughput window boundaries and distinguish service success from classification accuracy.
-- Save raw observations and each repeat. Report median/range and suitably bounded uncertainty rather than a universal gain. Keep separate backend-context comparisons from the thread experiment's causal claim.
-- Before selecting an INT8 path inspect the serialized graph/IR/opsets, installed runtime/quantizer, provider placement, supported operators/types and hardware. ORT generally recommends static quantization for CNNs; both dynamic and static need not work well here. [Official guidance](https://onnxruntime.ai/docs/performance/model-optimizations/quantization.html). Unsupported or slower INT8 is an acceptable finding.
+- Config/seeds/sizes/quality tolerances are fixed in `configs/demo.json`. Training/calibration/validation/test have separate purposes; calibration is a subset of training. Selected-split exact duplicates are skipped. Near-duplicates and pretrained-data overlap remain limitations.
+- FP32 tolerance is `abs(error) <= 1e-5 + 1e-4*abs(reference)`, not argmax-only agreement. INT8 validation-loss budget is two absolute percentage points, fixed before final test scoring. That is a guard, not a predicted result.
+- Explicit CPUExecutionProvider; inspect graph IR/opsets, quantized types and diagnostic optimized kernel/provider events. Unsupported/slower INT8 is a valid finding. Dynamic CNN quantization and QAT are not required.
+- Matched-budget model context: PyTorch FP32, ONNX FP32, supported ONNX INT8 at batch one/one thread. Thread tuning changes only ORT intra-op threads on the same FP32 graph.
+- Model timing: 50 untimed warmups, then 1,000 ready-tensor calls in each of three fresh processes. Retain raw observations; no decode/preprocess/session-load work inside this boundary.
+- HTTP inputs are the same ordered 32 validation images encoded as original 32×32 PNGs. One worker and one inference executor remain fixed. Large JPEG/camera decoding and production diversity are not established.
+- Pilot each thread setting for eight seconds at 30 req/s after 50 warmups. Choose the alternative with lowest success p95. Baseline serial-active median stage estimates only freeze final rates at 0.5/0.9/1.1 times that estimate; this is not a measured capacity claim.
+- Final condition: at least 60 seconds and aim for 2,000 scheduled requests, capped at 180 seconds, followed by bounded client timeout/drain. Three paired repeats, alternating order; max 32 client requests in flight, five-second timeout, retries off. Report realized sample counts.
+- Accept the candidate at the lowest-rate nominal point only if median p95 improves at least 5%, its repeat p95 range is below baseline's, success/offered falls by no more than 0.5 pp, neither nominal condition has generator drops, and p95 send lag is below the arrival interval. Otherwise retain baseline. This rule is not a promise of gain.
+- Account for every scheduled/sent/drop/success/rejection/error/timeout/outstanding request. Late completion never erases timeout. Separate successful latency, window throughput and cohort drain outcomes. Never add stage p95s or call subtracted percentiles queue time.
+- Preserve each repeat, compressed raw records, source/artifact/input/configuration identities and environment. Same-host generation competes for CPU; validity checks qualify conclusions. Three repeats do not establish universal speedups or capacity.
 
 ## Boundaries and stopping rule
 
-Minimum scope: one existing task/model, one host, batch one, stage evidence and one threading comparison. Optional static INT8 work is a separate stretch only after actual support and a missing baseline capability are established.
+One model/task/host, head-only CPU training, one static quantization path, one threading decision. No full-backbone training, architecture search, GPU port, serving platform, distributed deployment, dashboard or other projects. The 10×/100× questions remain conceptual.
 
-Excluded: retraining, architecture search, new dataset collection, GPU port, dynamic batching, new scheduler, autoscaling, distributed deployment, dashboards and other projects. The 10×/100× questions teach reasoning; they are not required capacity experiments.
-
-Stop after one development sweep and one frozen paired evaluation with a defensible decision and explanation. Allow a targeted repair/repeat for a demonstrated measurement fault. Do not retune on final results or chase a promised percentage. Missing baseline assets stop dependent implementation; useful independent documentation may proceed.
-
-## Planned public evidence
-
-The first independent component is implemented in `benchmarks/timing.py` and `benchmarks/report.py`, with a documented versioned record schema and hand-calculated synthetic accounting tests. This prepares part of milestone 2 without marking its actual-service acceptance gate complete. It does not bypass milestone 0, select a replacement baseline or establish any inference result. See [measurement interfaces](docs/measurement.md).
-
-Adapt the existing repository's tooling and directories after transfer. Keep timing definitions, exact commands/configuration, attribution and selected permitted result records versioned. No results are filled in yet.
-
-| Model/config/run | Input/artifact/config identity | Quality correct/N | Model p50/p95 | Client p50/p95 | Successful req/s | Offered/sent/outcome counts | Repeat variation | Decision/evidence |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Current | | | | | | | | |
-| Candidate | | | | | | | | |
+Stop once the rebuilt demo works, correctness/support are checked and the bounded comparison yields a defensible decision. Fix demonstrated faults, but do not repeatedly retune on final scores. Report unverified Docker packaging if no Docker engine exists. Keep GitHub private; no data/weight release or website publication.

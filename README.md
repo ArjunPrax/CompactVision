@@ -1,25 +1,83 @@
 # Compact Vision Inference Service
 
-A personal study of compact vision inference, correctness and CPU request latency, using [TorchVision](https://github.com/pytorch/vision) and [ONNX Runtime](https://github.com/microsoft/onnxruntime) as upstream foundations.
+A compact CPU classifier and inference-efficiency study using [TorchVision](https://github.com/pytorch/vision) and [ONNX Runtime](https://github.com/microsoft/onnxruntime). The owner authorized a fresh rebuild on 30 October 2026 because the other computer's code cannot be recovered. New results remain separate from earlier reported work.
 
-## Current state
+## What it does
 
-This repository contains the ownership-pass documentation and independently written measurement helpers: sequential request-stage timing and validated outcome/latency reporting. The owner reports a completed baseline on another computer; that implementation, checkpoints, dataset manifests and result logs have not been transferred into this checkout. There is no runnable classifier or inference service here yet. This does not change the reported completion of the original work.
+- Extract frozen ImageNet features with **MobileNetV3-Small**, then train only the last linear head for **CIFAR-10** public-image classification.
+- Share one checked RGB/resize/crop/normalization contract across training, export, evaluation and serving.
+- Export/verify ONNX FP32 and attempt one static per-channel INT8 QDQ experiment with training-only calibration.
+- Serve raw JPEG/PNG bytes through FastAPI and one explicitly configured CPU session loaded once per process.
+- Measure decoding, preparation, model, postprocessing, body reading, serialization and observed executor wait.
+- Compare one runtime-thread alternative fairly, preserving every scheduled request's outcome.
 
-See [STATUS.md](STATUS.md) for verified progress and the next action. Do not interpret repository setup or learning exercises as measured inference results.
+This is a ten-class public-image demonstration, **not workshop-parts recognition or a production perception system**. Default subsets are 10,000 train, 2,000 validation, 2,000 official-test images, plus 128 training-only calibration inputs. CIFAR-10 images are 32×32, resized for the pretrained input. Near-duplicates and upstream pretraining overlap are not ruled out; results do not establish workshop/high-resolution camera quality or decoding cost.
 
-The [measurement guide](docs/measurement.md) documents the implemented interfaces, record schema and commands. Its synthetic fixtures test arithmetic and accounting only; they are not performance results. The helpers use the Python standard library and require no dependency installation.
+See [STATUS.md](STATUS.md) for verified progress/results, [IMPROVEMENT_PLAN.md](IMPROVEMENT_PLAN.md) for the contribution and frozen decision rules, and [ATTRIBUTION.md](ATTRIBUTION.md) for provenance. Synthetic fixtures are accounting checks, never inference results.
 
-## Intended contribution
+## Run locally
 
-Explain where a real request spends time—image decoding, preprocessing, model execution, postprocessing and observable waiting—then compare one explicit CPU threading alternative against the baseline configuration. Preserve the model, task and input contract so the comparison answers a focused engineering question.
+Requires `uv` and Python 3.12. Run from the repository root. This command creates an isolated environment and installs locked packages:
 
-The outcome may be a configuration change or evidence that the existing configuration should be retained. A smaller model or faster forward pass alone does not establish better request latency.
+```sh
+uv sync --frozen
+```
 
-The [improvement plan](IMPROVEMENT_PLAN.md) defines ownership boundaries, acceptance checks, evaluation rules and exclusions. [ATTRIBUTION.md](ATTRIBUTION.md) separates upstream foundations from existing personal work and the proposed new contribution.
+The build downloads the public CIFAR-10 archive and pretrained weights, selects fixed splits, trains the head on CPU, exports/checks FP32, attempts static quantization and evaluates validation quality. Data/weights remain ignored. It refuses to overwrite an existing checkpoint; choose a new artifact directory or use deliberate individual commands for a rebuild.
 
-## Learning and reproducibility
+```sh
+uv run compact-vision build
+```
 
-Private beginner lessons live locally in `.learning/`, ignored by `/.learning/` and backed up separately. They start with programming, images and model fundamentals, then cover preprocessing, transfer learning, ONNX, quantization and performance measurement. They do not accompany a normal clone.
+Start the loopback service after building. Startup loads artifacts; it performs no training or dataset download. Stop with Ctrl-C.
 
-Public technical definitions, reproducible evaluation code/configuration and selected permitted results will remain outside that folder. Until the baseline is available, the lessons distinguish conceptual examples from unverified project details. No new accuracy, speedup or capacity result has been measured in this repository.
+```sh
+uv run compact-vision serve --backend fp32 --threads 1
+```
+
+In another terminal, inspect readiness or submit your own image as raw bytes (not multipart):
+
+```sh
+curl http://127.0.0.1:8000/health
+curl -H 'Content-Type: image/jpeg' --data-binary @your-image.jpg http://127.0.0.1:8000/predict
+```
+
+Responses contain the top three class scores; softmax scores are not calibrated certainty. Invalid/oversized/unsupported input receives an explicit error. The `X-Compact-Trace` header contains server stage intervals; `/docs` exposes the API contract.
+
+## Evaluate and measure
+
+These commands create a real input trace, fresh-process model timings and a bounded loopback HTTP threading study. The study can take many minutes and stops its service afterward. New output directories are required for reruns so earlier evidence is preserved.
+
+```sh
+uv run compact-vision trace
+uv run compact-vision benchmark
+uv run compact-vision study
+```
+
+After methods/quality settings are frozen, explicitly score the untouched test subset:
+
+```sh
+uv run compact-vision evaluate --split test
+```
+
+Individual commands are `prepare`, `train`, `export`, `quantize`, `evaluate --split validation`. Configuration is [configs/demo.json](configs/demo.json); an alternate is passed before the command as `--config path.json`. Read [evaluation definitions](docs/evaluation.md) and [record schema](docs/measurement.md) before interpreting reports. Historical approximate speedups do not predict this rebuild's results.
+
+## Checks and container packaging
+
+These validate implementation contracts, not model usefulness or performance:
+
+```sh
+uv run pytest -q
+uv run ruff check .
+```
+
+The Dockerfile packages the ONNX service without training dependencies or bundled data/weights. Mount local generated artifacts; native and container measurements remain separate. Docker validation status is recorded in STATUS.md.
+
+```sh
+docker build -t compact-vision .
+docker run --rm -p 127.0.0.1:8000:8000 -v "$PWD/models/demo:/models:ro" compact-vision
+```
+
+## Ownership and learning
+
+The personal contribution is checked shared preprocessing, honest stage/outcome accounting and a defensible configuration decision, not invention of MobileNet/ONNX/quantization. Private lessons in Git-ignored `.learning/` start with terminal/Python/image basics, proceed through actual source and experiments, and keep exercises, progressive hints and answer checks separate. They are privately backed up and do not accompany a clone. Public configs, definitions, commands and selected evidence remain outside that folder. No employer/lab assets are used.

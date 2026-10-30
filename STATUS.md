@@ -2,26 +2,27 @@
 
 Updated 30 October 2026.
 
-## Verified here
+## Scope decision
 
-- The workspace initially held two local planning documents and no implementation/Git history.
-- The owner authorized implementation, creation of a GitHub repository and learning material assuming no prior knowledge.
-- The completed baseline remains unavailable: no matching implementation was found in this workspace, the targeted local search or the accessible GitHub repository-name search.
-- Upstream foundations are ONNX Runtime and TorchVision. They do not establish the owner's task/model/stack.
-- Created the private GitHub repository `ArjunPrax/CompactVision`; private guides and the original local planning documents remain excluded from Git.
-- Implemented independent sequential stage timing (`benchmarks/timing.py`) and single-run outcome/latency reporting (`benchmarks/report.py`), with a versioned JSON/JSONL contract documented in `docs/measurement.md`.
-- Passed 23 focused standard-library tests on Python 3.14.3: hand-calculated counts/quantiles, deadline/window boundaries, missing/duplicate records, failed/nested stages, late-success misclassification, overlapping traces, metadata and CLI errors. Fixtures are explicitly synthetic. These validate the new helpers only; no live performance finding is established.
-- Installed 13 locally ignored guide documents plus a learner-notes index. The curriculum starts with terminal/Python/image fundamentals and proceeds through model/preprocessing, ONNX/quantization, performance, experiments, the twelve questions and independent teach-back. A new beginner walkthrough covers the actual measurement helpers. The classifier/service walkthrough remains explicitly unfilled.
-- Verified the ignore rule and empty tracked-guide list before publishing. Checked relative document/lesson links, fenced blocks, Python snippet syntax and coverage of all twelve questions.
-- Created and hash-verified a separate local private guide backup. A second-device transfer has not occurred; the guides will not accompany a normal clone.
-- No model/service implementation, dependency installation, new model run, accuracy evaluation or load test has occurred. Documentation checks do not validate the original baseline or the proposed extension.
+The owner explicitly authorized rebuilding everything here because the other computer's code cannot be obtained. Waiting for transfer is no longer a dependency. Earlier completion/approximate result reports remain historical user reports, separate from this rebuild.
 
-## Pending technical work
+## Implemented
 
-Milestone 0 remains incomplete. Model/checkpoint, data/splits, transforms, export/quantization path, service interface, benchmark tooling, environment and saved evidence require the completed baseline. Source-specific walkthroughs and experiment results cannot be filled in truthfully before that.
+- Locked Python 3.12 environment; MobileNetV3-Small frozen-feature extraction and a trainable ten-class CIFAR-10 head.
+- Fixed stratified subsets, training-only calibration, exact-pixel duplicate protection across selected splits.
+- Shared PIL/NumPy input contract checked against TorchVision on square/portrait/landscape images.
+- CPU backends, export/parity, static INT8 support/profiling and labeled quality reporting.
+- FastAPI lifecycle, one loaded session, bounded inputs, explicit errors and observable stage/executor-wait intervals.
+- Fresh-process model timing, open-arrival traffic and one frozen paired threading comparison with all outcomes retained.
+- Docker recipe, public reproduction documentation and private beginner curriculum.
 
-The proposed contribution is stage-resolved CPU request-latency diagnosis followed by one controlled thread-setting comparison, if actual inspection confirms a useful gap. The independent accounting/timing code prepares part of that work; actual timer placement, instrumentation overhead, correctness checks, adapter and thread comparison remain unimplemented until the baseline can be inspected.
+## Verified so far
+
+- Python 3.12.12, torch 2.15.0, torchvision 0.29.2, ONNX 1.23.2, ORT 1.31.1 installed and locked. CPUExecutionProvider is available and explicitly selected by the experiment code.
+- 32 tests passed, including original accounting tests, preprocessing equivalence, decoder/API contracts, split guards and traffic timeout/drop accounting. Ruff passed. A dependency emits a TestClient deprecation warning; assertions passed.
+- Public dataset download/training is in progress. Actual trained artifacts, export parity, quality and live timing are not yet verified; no gain is claimed.
+- Docker is not installed on this host, so image build/run is unverified.
 
 ## Next action
 
-Recover the completed checkout with its history and local changes intact. Read its applicable instructions, inspect status/HEAD and bind the improvement plan to actual files/artifacts. Preserve this bootstrap and integrate its documentation deliberately; do not overwrite or flatten the original history. No baseline rebuild is authorized merely by its absence here.
+Finish the archive download and CPU head training; execute export/parity and static quantization support checks before quality/timing. Run the frozen comparison and record actual outcomes and limitations. Bind private guides to this rebuilt source and its observed input trace. Preserve Git history and keep guides/data/weights untracked.

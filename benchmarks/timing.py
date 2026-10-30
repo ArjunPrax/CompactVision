@@ -62,6 +62,11 @@ class Trace:
         self._last = offset
         return offset
 
+    @property
+    def origin_ns(self):
+        """Origin on this process's clock, for same-process interval alignment only."""
+        return self._origin
+
     @contextmanager
     def stage(self, name):
         identifier(name, "stage name")

@@ -1,0 +1,9 @@
+.git
+.venv
+.learning
+data
+models
+work
+results
+COMPACT_VISION_*
+__pycache__

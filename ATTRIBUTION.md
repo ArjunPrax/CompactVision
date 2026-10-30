@@ -1,14 +1,18 @@
 # Attribution and provenance
 
-## Upstream foundations named by the owner
+## Foundations
 
-- [Microsoft ONNX Runtime](https://github.com/microsoft/onnxruntime): inference and quantization infrastructure. Upstream repository identifies an MIT license.
-- [PyTorch TorchVision](https://github.com/pytorch/vision): vision architectures, pretrained-model interfaces and image transforms. Upstream repository identifies a BSD-3-Clause license.
+- [ONNX Runtime](https://github.com/microsoft/onnxruntime): runtime and quantization APIs, MIT-licensed upstream code.
+- [PyTorch](https://github.com/pytorch/pytorch) and [TorchVision](https://github.com/pytorch/vision): neural-network computation, MobileNetV3-Small, ImageNet weights and CIFAR-10 loader. TorchVision identifies BSD-3-Clause licensing; weight/data terms are separate. Exact versions are in `uv.lock`; training metadata records the weight URL/digest.
+- [CIFAR-10](https://www.cs.toronto.edu/~kriz/cifar.html), Alex Krizhevsky, Vinod Nair and Geoffrey Hinton. Cite Alex Krizhevsky, *Learning Multiple Layers of Features from Tiny Images*, 2009. TorchVision checks the official archive MD5. Dataset images are not committed/released.
+- FastAPI, Uvicorn, Pillow, NumPy and HTTPX provide serving, imaging and client infrastructure; the lock file identifies dependencies.
 
-These projects are libraries/foundations, not a recovered copy of the owner's completed inference service. No source files or weights from them have been imported into this checkout. Exact adopted versions, reused examples and modifications must be recorded from the baseline when it is transferred. Preserve applicable notices for any copied code. Weight and dataset provenance/terms require their own records.
+MobileNetV3 originates in Howard et al., *Searching for MobileNetV3*, ICCV 2019. Architecture, pretrained ImageNet results and runtime/quantization algorithms are not personal inventions.
 
-## Existing work and this pass
+## This implementation
 
-The owner reports the personal baseline complete on another computer. Source-level ownership, checkpoint lineage, data splits and historical result configuration remain unverified in this checkout. Absence here does not withdraw that completion report.
+The independently written code in `compact_vision/` and `benchmarks/` integrates shared checked preprocessing, frozen-feature head training, export/parity, a static INT8 experiment, CPU serving, stage/outcome reporting and a controlled threading decision. No code was copied from the unavailable earlier personal project or employer/lab assets.
 
-The new pass proposes an independently written stage-latency investigation and controlled CPU threading experiment, using the existing artifacts and interface. `benchmarks/timing.py` and `benchmarks/report.py` are new independently written measurement helpers in this pass, tested with fabricated records in `tests/fixtures/synthetic/`. They do not contain code imported from the inaccessible personal baseline or either upstream library. Documentation and private lessons are present; baseline/service integration and new measured results remain pending access. Do not present library methods, upstream benchmark figures or toy exercise outputs as personal experimental results.
+The owner authorized a fresh rebuild on 30 October 2026. Earlier approximate size/speed/accuracy reports stay historical user reports; they are not measurements for this build. New claims require this code/model/input/hardware provenance.
+
+Training a new last linear layer over frozen ImageNet features is transfer learning/head training, not full-backbone fine-tuning. CIFAR-10 is a public-image demo, not workshop-parts recognition or production operation. Synthetic fixtures/fake engines test contracts only. Data and generated weights stay ignored; no release is authorized.

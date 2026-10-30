@@ -14,7 +14,7 @@ One PIL/NumPy transform in `compact_vision/preprocessing.py` performs RGB, short
 
 Parity compares eval-mode PyTorch and ONNX on identical tensors, records numeric errors against frozen tolerances, top-1 disagreements and dynamic batch-two behavior. Structural validity or successful loading is insufficient. INT8 is lossy and receives separate labeled-quality checks.
 
-Static S8S8 QDQ uses per-channel weights and MinMax training-only calibration for supported Conv/Gemm/MatMul nodes, with shape/optimization preparation separate from quantization. Report actual graph/opsets/IR/initializer types and diagnostic optimized kernel/provider events. A quantized filename is not execution evidence. Preserve unsupported/slower/quality-loss findings without forcing a different technology or claiming a speedup.
+The rejected initial static S8S8 QDQ path covered Conv/Gemm/MatMul. The retained partial-INT8 path quantizes only classifier Gemm operations, using per-channel weights and MinMax training-only calibration; convolution stays float. Shape/optimization preparation is separate. See the development decisions in the improvement plan. Report actual graph/opsets/IR/initializer types and diagnostic optimized kernel/provider events. A quantized filename is not execution evidence. Preserve unsupported/slower/quality-loss findings without forcing a different technology or claiming a speedup.
 
 ## Timings
 

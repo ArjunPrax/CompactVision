@@ -73,6 +73,8 @@ def model_worker(config_path, backend_name, threads, repeat, output):
                         "warmup_calls": config["model_warmup_calls"], "timed_calls": len(rows),
                         "latency_ms": distribution([row["duration_ns"] for row in rows]),
                         "inputs": identities, "inputs_sha256": object_hash(identities),
+                        "int8_scope": read_json(Path(config["artifacts"]) / "quantization.json").get("scope") if backend_name == "int8" else None,
+                        "validation_quality_eligible": read_json(Path(config["results"]) / "quality-validation.json").get("int8_quality_eligible") if backend_name == "int8" else True,
                         "boundary": "ready numpy float32 NCHW tensor through completed backend output; includes required wrapper conversion; no decoding/preprocessing/session load",
                         "environment": environment(), "code": provenance()})
 

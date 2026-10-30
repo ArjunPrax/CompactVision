@@ -19,11 +19,25 @@ from .runtime import OnnxBackend
 def graph_info(path):
     graph = onnx.load(path)
     onnx.checker.check_model(graph)
+    initializers = {item.name: onnx.numpy_helper.to_array(item) for item in graph.graph.initializer}
+    parameters = []
+    for node in graph.graph.node:
+        if node.op_type == "DequantizeLinear" and node.input[0] in initializers:
+            values = initializers[node.input[0]]
+            if values.dtype != np.int8:
+                continue
+            scale = initializers[node.input[1]]
+            zero = initializers[node.input[2]]
+            parameters.append({"tensor": node.input[0], "quantized_shape": list(values.shape),
+                               "axis": next((attribute.i for attribute in node.attribute if attribute.name == "axis"), None),
+                               "scale_shape": list(scale.shape), "scale_sample": scale.reshape(-1)[:8].tolist(),
+                               "zero_point_sample": zero.reshape(-1)[:8].tolist()})
     return {
         "sha256": sha256(path), "bytes": Path(path).stat().st_size, "ir_version": graph.ir_version,
         "opsets": {item.domain or "ai.onnx": item.version for item in graph.opset_import},
         "operators": dict(Counter(node.op_type for node in graph.graph.node)),
         "initializer_dtypes": dict(Counter(onnx.TensorProto.DataType.Name(item.data_type) for item in graph.graph.initializer)),
+        "quantized_weight_parameters": parameters,
     }
 
 
@@ -87,10 +101,11 @@ def quantize(config, manifest):
     prepared = artifacts / "model.preprocessed.onnx"
     quant_pre_process(str(artifacts / "model.fp32.onnx"), str(prepared), skip_symbolic_shape=True)
     output = artifacts / "model.int8.onnx"
+    operators = config.get("quantized_operators", ["Conv", "Gemm", "MatMul"])
     quantize_static(str(prepared), str(output), CalibrationReader(config["data_root"], manifest["indices"]["calibration"]),
                     quant_format=QuantFormat.QDQ, activation_type=QuantType.QInt8, weight_type=QuantType.QInt8,
                     per_channel=True, calibrate_method=CalibrationMethod.MinMax,
-                    op_types_to_quantize=["Conv", "Gemm", "MatMul"])
+                    op_types_to_quantize=operators)
     # Execution and provider placement must be checked, not inferred from conversion success.
     backend = OnnxBackend(output, threads=config["baseline_threads"], profile_prefix=artifacts / "int8-profile")
     source = dataset(config["data_root"], True)
@@ -106,7 +121,8 @@ def quantize(config, manifest):
             kernels[args.get("op_name", "unknown")] += 1
             providers[args.get("provider", "unknown")] += 1
     report = {"status": "supported", "format": "static S8S8 QDQ", "method": "MinMax", "per_channel_weights": True,
-              "requested_operators": ["Conv", "Gemm", "MatMul"], "artifact": graph_info(output),
+              "requested_operators": operators, "scope": "classifier Gemm only; convolution backbone stays FP32" if operators == ["Gemm"] else "requested Conv/Gemm/MatMul path",
+              "artifact": graph_info(output),
               "float_source_sha256": sha256(artifacts / "model.fp32.onnx"),
               "calibration_source": "training subset only", "calibration_indices": manifest["indices"]["calibration"],
               "calibration_manifest_sha256": object_hash(manifest["indices"]["calibration"]),

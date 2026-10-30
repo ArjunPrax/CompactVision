@@ -10,6 +10,7 @@ from PIL import Image
 import pytest
 
 from benchmarks.timing import validate_trace
+from compact_vision.common import read_json
 from compact_vision.preprocessing import decode_image, preprocess
 from compact_vision.runtime import make_backend
 from compact_vision.service import create_app
@@ -26,7 +27,11 @@ def test_real_export_and_service_predictions_match_for_the_same_encoded_input():
     inputs = preprocess(decode_image(encoded))
     reference = make_backend(ARTIFACTS, "torch").predict(inputs)
     exported = make_backend(ARTIFACTS, "fp32").predict(inputs)
-    np.testing.assert_allclose(exported, reference, atol=1e-5, rtol=1e-4)
+    config = read_json("configs/demo.json")
+    np.testing.assert_allclose(exported, reference, atol=config["parity_atol"], rtol=config["parity_rtol"])
+    wrong_input = np.ascontiguousarray(np.asarray(decode_image(encoded).resize((224, 224)), dtype=np.float32).transpose(2, 0, 1)[None] / 255)
+    wrong_logits = make_backend(ARTIFACTS, "fp32").predict(wrong_input)
+    assert not np.allclose(wrong_logits, reference, atol=config["parity_atol"], rtol=config["parity_rtol"])
     with TestClient(create_app()) as client:
         health = client.get("/health").json()
         assert health["runtime"]["providers"] == ["CPUExecutionProvider"]

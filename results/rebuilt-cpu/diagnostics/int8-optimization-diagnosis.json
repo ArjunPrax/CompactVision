@@ -1,0 +1,293 @@
+{
+  "per_input": [
+    {
+      "index": 24409,
+      "label": 2,
+      "fp32_prediction": 2,
+      "int8_unoptimized_prediction": 0,
+      "int8_optimized_prediction": 0,
+      "int8_unoptimized_float_error": 9.806334495544434,
+      "int8_optimized_unoptimized_error": 0.0
+    },
+    {
+      "index": 25347,
+      "label": 4,
+      "fp32_prediction": 4,
+      "int8_unoptimized_prediction": 2,
+      "int8_optimized_prediction": 2,
+      "int8_unoptimized_float_error": 5.803940773010254,
+      "int8_optimized_unoptimized_error": 0.3804900646209717
+    },
+    {
+      "index": 44551,
+      "label": 5,
+      "fp32_prediction": 5,
+      "int8_unoptimized_prediction": 2,
+      "int8_optimized_prediction": 2,
+      "int8_unoptimized_float_error": 8.787446022033691,
+      "int8_optimized_unoptimized_error": 0.285367488861084
+    },
+    {
+      "index": 25011,
+      "label": 8,
+      "fp32_prediction": 8,
+      "int8_unoptimized_prediction": 2,
+      "int8_optimized_prediction": 2,
+      "int8_unoptimized_float_error": 8.84719467163086,
+      "int8_optimized_unoptimized_error": 0.285367488861084
+    },
+    {
+      "index": 46325,
+      "label": 3,
+      "fp32_prediction": 3,
+      "int8_unoptimized_prediction": 2,
+      "int8_optimized_prediction": 2,
+      "int8_unoptimized_float_error": 7.237191200256348,
+      "int8_optimized_unoptimized_error": 0.0951225757598877
+    },
+    {
+      "index": 14927,
+      "label": 1,
+      "fp32_prediction": 1,
+      "int8_unoptimized_prediction": 0,
+      "int8_optimized_prediction": 0,
+      "int8_unoptimized_float_error": 11.562262535095215,
+      "int8_optimized_unoptimized_error": 0.3804900646209717
+    },
+    {
+      "index": 19798,
+      "label": 6,
+      "fp32_prediction": 6,
+      "int8_unoptimized_prediction": 0,
+      "int8_optimized_prediction": 0,
+      "int8_unoptimized_float_error": 6.053666114807129,
+      "int8_optimized_unoptimized_error": 0.19024497270584106
+    },
+    {
+      "index": 39425,
+      "label": 7,
+      "fp32_prediction": 7,
+      "int8_unoptimized_prediction": 4,
+      "int8_optimized_prediction": 4,
+      "int8_unoptimized_float_error": 7.205129623413086,
+      "int8_optimized_unoptimized_error": 0.0
+    },
+    {
+      "index": 41345,
+      "label": 0,
+      "fp32_prediction": 0,
+      "int8_unoptimized_prediction": 0,
+      "int8_optimized_prediction": 0,
+      "int8_unoptimized_float_error": 6.418957233428955,
+      "int8_optimized_unoptimized_error": 0.0
+    },
+    {
+      "index": 44009,
+      "label": 9,
+      "fp32_prediction": 9,
+      "int8_unoptimized_prediction": 0,
+      "int8_optimized_prediction": 0,
+      "int8_unoptimized_float_error": 10.287185668945312,
+      "int8_optimized_unoptimized_error": 0.28536760807037354
+    },
+    {
+      "index": 20306,
+      "label": 4,
+      "fp32_prediction": 4,
+      "int8_unoptimized_prediction": 2,
+      "int8_optimized_prediction": 2,
+      "int8_unoptimized_float_error": 8.450907707214355,
+      "int8_optimized_unoptimized_error": 0.2853677272796631
+    },
+    {
+      "index": 34138,
+      "label": 1,
+      "fp32_prediction": 1,
+      "int8_unoptimized_prediction": 0,
+      "int8_optimized_prediction": 0,
+      "int8_unoptimized_float_error": 11.820998191833496,
+      "int8_optimized_unoptimized_error": 0.3804900050163269
+    },
+    {
+      "index": 15499,
+      "label": 5,
+      "fp32_prediction": 3,
+      "int8_unoptimized_prediction": 0,
+      "int8_optimized_prediction": 0,
+      "int8_unoptimized_float_error": 8.163444519042969,
+      "int8_optimized_unoptimized_error": 0.0
+    },
+    {
+      "index": 5355,
+      "label": 6,
+      "fp32_prediction": 6,
+      "int8_unoptimized_prediction": 2,
+      "int8_optimized_prediction": 2,
+      "int8_unoptimized_float_error": 10.104386329650879,
+      "int8_optimized_unoptimized_error": 0.0
+    },
+    {
+      "index": 36961,
+      "label": 3,
+      "fp32_prediction": 5,
+      "int8_unoptimized_prediction": 0,
+      "int8_optimized_prediction": 0,
+      "int8_unoptimized_float_error": 5.531622886657715,
+      "int8_optimized_unoptimized_error": 0.0
+    },
+    {
+      "index": 38739,
+      "label": 5,
+      "fp32_prediction": 5,
+      "int8_unoptimized_prediction": 0,
+      "int8_optimized_prediction": 0,
+      "int8_unoptimized_float_error": 6.754384517669678,
+      "int8_optimized_unoptimized_error": 0.285367488861084
+    },
+    {
+      "index": 48588,
+      "label": 4,
+      "fp32_prediction": 4,
+      "int8_unoptimized_prediction": 4,
+      "int8_optimized_prediction": 4,
+      "int8_unoptimized_float_error": 4.8183465003967285,
+      "int8_optimized_unoptimized_error": 0.0
+    },
+    {
+      "index": 36998,
+      "label": 6,
+      "fp32_prediction": 6,
+      "int8_unoptimized_prediction": 2,
+      "int8_optimized_prediction": 2,
+      "int8_unoptimized_float_error": 11.112396240234375,
+      "int8_optimized_unoptimized_error": 0.6658575534820557
+    },
+    {
+      "index": 6875,
+      "label": 4,
+      "fp32_prediction": 4,
+      "int8_unoptimized_prediction": 0,
+      "int8_optimized_prediction": 0,
+      "int8_unoptimized_float_error": 5.349083423614502,
+      "int8_optimized_unoptimized_error": 0.19024497270584106
+    },
+    {
+      "index": 23260,
+      "label": 1,
+      "fp32_prediction": 1,
+      "int8_unoptimized_prediction": 0,
+      "int8_optimized_prediction": 0,
+      "int8_unoptimized_float_error": 9.362115859985352,
+      "int8_optimized_unoptimized_error": 0.285367488861084
+    },
+    {
+      "index": 463,
+      "label": 2,
+      "fp32_prediction": 2,
+      "int8_unoptimized_prediction": 0,
+      "int8_optimized_prediction": 0,
+      "int8_unoptimized_float_error": 8.386320114135742,
+      "int8_optimized_unoptimized_error": 0.0
+    },
+    {
+      "index": 20498,
+      "label": 4,
+      "fp32_prediction": 7,
+      "int8_unoptimized_prediction": 0,
+      "int8_optimized_prediction": 0,
+      "int8_unoptimized_float_error": 6.100060939788818,
+      "int8_optimized_unoptimized_error": 0.3804900646209717
+    },
+    {
+      "index": 19643,
+      "label": 4,
+      "fp32_prediction": 4,
+      "int8_unoptimized_prediction": 2,
+      "int8_optimized_prediction": 2,
+      "int8_unoptimized_float_error": 4.010064125061035,
+      "int8_optimized_unoptimized_error": 0.0
+    },
+    {
+      "index": 28422,
+      "label": 2,
+      "fp32_prediction": 2,
+      "int8_unoptimized_prediction": 0,
+      "int8_optimized_prediction": 0,
+      "int8_unoptimized_float_error": 8.24775218963623,
+      "int8_optimized_unoptimized_error": 0.0
+    },
+    {
+      "index": 1764,
+      "label": 7,
+      "fp32_prediction": 7,
+      "int8_unoptimized_prediction": 4,
+      "int8_optimized_prediction": 4,
+      "int8_unoptimized_float_error": 9.582550048828125,
+      "int8_optimized_unoptimized_error": 0.0
+    },
+    {
+      "index": 15848,
+      "label": 0,
+      "fp32_prediction": 0,
+      "int8_unoptimized_prediction": 0,
+      "int8_optimized_prediction": 0,
+      "int8_unoptimized_float_error": 8.172063827514648,
+      "int8_optimized_unoptimized_error": 0.0
+    },
+    {
+      "index": 20979,
+      "label": 7,
+      "fp32_prediction": 7,
+      "int8_unoptimized_prediction": 0,
+      "int8_optimized_prediction": 0,
+      "int8_unoptimized_float_error": 8.325312614440918,
+      "int8_optimized_unoptimized_error": 0.28536751866340637
+    },
+    {
+      "index": 46884,
+      "label": 4,
+      "fp32_prediction": 4,
+      "int8_unoptimized_prediction": 2,
+      "int8_optimized_prediction": 2,
+      "int8_unoptimized_float_error": 9.522523880004883,
+      "int8_optimized_unoptimized_error": 0.1902449131011963
+    },
+    {
+      "index": 7491,
+      "label": 6,
+      "fp32_prediction": 6,
+      "int8_unoptimized_prediction": 2,
+      "int8_optimized_prediction": 2,
+      "int8_unoptimized_float_error": 9.014699935913086,
+      "int8_optimized_unoptimized_error": 0.0
+    },
+    {
+      "index": 26417,
+      "label": 4,
+      "fp32_prediction": 4,
+      "int8_unoptimized_prediction": 2,
+      "int8_optimized_prediction": 2,
+      "int8_unoptimized_float_error": 8.266085624694824,
+      "int8_optimized_unoptimized_error": 0.285367488861084
+    },
+    {
+      "index": 35107,
+      "label": 2,
+      "fp32_prediction": 4,
+      "int8_unoptimized_prediction": 0,
+      "int8_optimized_prediction": 0,
+      "int8_unoptimized_float_error": 5.789994239807129,
+      "int8_optimized_unoptimized_error": 0.0
+    },
+    {
+      "index": 1088,
+      "label": 5,
+      "fp32_prediction": 5,
+      "int8_unoptimized_prediction": 0,
+      "int8_optimized_prediction": 0,
+      "int8_unoptimized_float_error": 8.013077735900879,
+      "int8_optimized_unoptimized_error": 0.0
+    }
+  ],
+  "purpose": "development only; optimized integer kernels versus unfused QDQ diagnostic"
+}

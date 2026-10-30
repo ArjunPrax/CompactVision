@@ -56,11 +56,14 @@ def environment():
         except importlib.metadata.PackageNotFoundError:
             packages[name] = "unavailable"
     cpu = subprocess.run(["sysctl", "-n", "machdep.cpu.brand_string", "hw.memsize"], capture_output=True, text=True) if sys.platform == "darwin" else None
+    power = subprocess.run(["pmset", "-g", "batt"], capture_output=True, text=True) if sys.platform == "darwin" else None
     return {
         "os": platform.platform(), "architecture": platform.machine(), "python": platform.python_version(),
         "hardware": cpu.stdout.strip().replace("\n", "; ") if cpu and cpu.returncode == 0 else platform.processor(),
         "logical_cpus": os.cpu_count(), "packages": packages,
         "execution_context": "native host (no container)",
+        "power_source": power.stdout.splitlines()[0] if power and power.returncode == 0 else "unavailable",
+        "thread_environment": {name: os.environ.get(name) for name in ("OMP_NUM_THREADS", "MKL_NUM_THREADS", "OPENBLAS_NUM_THREADS")},
     }
 
 

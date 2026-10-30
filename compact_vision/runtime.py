@@ -45,10 +45,13 @@ class TorchBackend:
         from .model import load_model
 
         torch.set_num_threads(threads)
+        if torch.get_num_interop_threads() != 1:
+            torch.set_num_interop_threads(1)
         self.torch = torch
         self.model = load_model(path)
         self.model_sha256 = sha256(path)
-        self.info = {"backend": "pytorch", "version": torch.__version__, "device": "cpu", "intra_op_threads": threads}
+        self.info = {"backend": "pytorch", "version": torch.__version__, "device": "cpu", "intra_op_threads": threads,
+                     "inter_op_threads": torch.get_num_interop_threads()}
 
     def predict(self, inputs):
         with self.torch.inference_mode():

@@ -1,0 +1,146 @@
+{
+  "input": {
+    "official_train_index": 24409,
+    "true_class_index": 2,
+    "png_sha256": "e5445843c48db82efd5631609ac98a7e59b704396a4c724c9ec62ec167ab2f88",
+    "bytes": 1760,
+    "dimensions": [
+      32,
+      32
+    ]
+  },
+  "decoded": {
+    "shape": [
+      32,
+      32,
+      3
+    ],
+    "dtype": "uint8",
+    "min": 24.0,
+    "max": 255.0,
+    "first_values": [
+      193,
+      227,
+      252,
+      165,
+      213,
+      254,
+      169,
+      216
+    ]
+  },
+  "tensor": {
+    "shape": [
+      1,
+      3,
+      224,
+      224
+    ],
+    "dtype": "float32",
+    "min": -1.6726603507995605,
+    "max": 2.640000104904175,
+    "first_values": [
+      0.7419300079345703,
+      0.7590547204017639,
+      0.7590547204017639,
+      0.7761794924736023,
+      0.7761794924736023,
+      0.7590547204017639,
+      0.7590547204017639,
+      0.7590547204017639
+    ]
+  },
+  "preprocessing": {
+    "color": "RGB",
+    "exif": "transpose before RGB conversion",
+    "resize_short_side": 256,
+    "crop": 224,
+    "interpolation": "PIL bilinear",
+    "layout": "NCHW",
+    "dtype": "float32",
+    "scale": 255.0,
+    "mean": [
+      0.485,
+      0.456,
+      0.406
+    ],
+    "std": [
+      0.229,
+      0.224,
+      0.225
+    ]
+  },
+  "prediction": {
+    "request_id": "documented-input",
+    "model_sha256": "09b26ea85cf36be9b931b8a77c93a6d151f1be82cbb120df80f321afab76b87b",
+    "predictions": [
+      {
+        "index": 2,
+        "label": "bird",
+        "score": 0.9994480013847351
+      },
+      {
+        "index": 0,
+        "label": "airplane",
+        "score": 0.00048272954882122576
+      },
+      {
+        "index": 7,
+        "label": "horse",
+        "score": 3.578216637833975e-05
+      }
+    ]
+  },
+  "trace": {
+    "request_id": "documented-input",
+    "duration_ns": 4517792,
+    "stages": [
+      {
+        "name": "decode",
+        "start_ns": 7500,
+        "end_ns": 102125
+      },
+      {
+        "name": "preprocess",
+        "start_ns": 105334,
+        "end_ns": 835292
+      },
+      {
+        "name": "model",
+        "start_ns": 838584,
+        "end_ns": 4451584
+      },
+      {
+        "name": "postprocess",
+        "start_ns": 4454084,
+        "end_ns": 4516542
+      }
+    ]
+  },
+  "timing_status": "single cold diagnostic, not steady-state benchmark",
+  "code": {
+    "revision": "7c53a84001495b5802a044c9c10e0b80cf82a3ca",
+    "tracked_patch_sha256": "6fa45eda4b940e0d9f51afc88b8cdf6181c4e215bd2be8b28ec52da4f86576cc",
+    "source_files_sha256": {
+      "benchmarks/__init__.py": "079d0d5019f8e3a787f8e3047e54087d32ca4a2077d1d20ae19c172aaf240451",
+      "benchmarks/report.py": "3bf76e7b43e8accbe91f29728d552b008a32b2812afa10f6cbc7c63752b69f49",
+      "benchmarks/timing.py": "3821a1eb2ec289f14e9b0b7473896713c16e9b5ff0d05416098ff540bcaf33a4",
+      "compact_vision/__init__.py": "0a7169a63e79d7f378a1d8e7162285eb05de1e74d77914ab9582f648add833eb",
+      "compact_vision/cli.py": "6a67837c02378254bb7bcaa6864a4cd6fa27aa8ec7a86a6d48b83fc452a34752",
+      "compact_vision/common.py": "c364cba8607f11a3bda3812028cf35e2d220e5c73d319f344034b6b8c48a1d8d",
+      "compact_vision/data.py": "cfeb0b9ad120a070615f6495516afc8e3759a4ae438751940eae87fd4ad8e778",
+      "compact_vision/evaluation.py": "f1878f380e3b79e6737242118c3944d0e99124c5524904b673a0158c9578ef5d",
+      "compact_vision/experiment.py": "007d85166ddf0284f9b49df22a4bd2a8858d11e8ee387660db44917fec03cf21",
+      "compact_vision/exporting.py": "0bea9c872a31a57477cc24d97aec8e3e31d41fb5f5d1bbf205830cdaa2bd85fe",
+      "compact_vision/model.py": "c9c9ec5f3654417e1e36354a23be1f54c85e5246f01c293c1fdf56643b2f1af5",
+      "compact_vision/preprocessing.py": "d072fb921b25aa3bd800db17cd4dee9de88ba0847397e37fdcac4155ea80462a",
+      "compact_vision/runtime.py": "4ed185812fbf70080fa7902a345bf76cefb4e332b21c51adc97b33663194c190",
+      "compact_vision/service.py": "df66b09af576d93fd04cb16d9d1b885b6b7b460090094c0c82e5f0cfe94625bf",
+      "compact_vision/training.py": "0dd746fc3b3b3044e3df0d07ef1c3a081453f88b0f29ea52d107e536d1946823",
+      "configs/demo.json": "356c869bda81867b1c97c4dedde1892fe0162d3bc1354ce94e52781a242a8304",
+      "pyproject.toml": "6b4726e977b3218100edce54d48ed43dc1979cbca219898e47d6cba4170c0973",
+      "uv.lock": "f4f79c83dd57f697085cb8f189d53b0eaa39118c76929d53a41068334c28cd32"
+    },
+    "untracked_source_files": {}
+  }
+}

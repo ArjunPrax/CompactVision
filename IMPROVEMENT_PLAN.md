@@ -12,7 +12,7 @@ The baseline is ImageNet-pretrained TorchVision MobileNetV3-Small, with only the
 | --- | --- |
 | Rebuild baseline | Fixed manifests; 10,000 training, 2,000 validation and 2,000 official-test images. Train head for 20 epochs; select by validation correct/loss only. |
 | Input/export correctness | One transform checked against prescribed upstream transform; FP32 numeric parity on 32 validation images and dynamic batch two. |
-| Quantization applicability | Static per-channel S8S8 QDQ, MinMax over 128 training-only images; graph/types/kernel/provider evidence and separate task-quality guard. |
+| Quantization applicability | Static per-channel S8S8 QDQ, MinMax over 128 training-only images; retain the rejected full-CNN experiment and the one targeted classifier-only correction, with graph/kernel/provider evidence and quality guards. |
 | Explain stages | Real decode/preprocess/model/postprocess plus body read, observable executor wait and response-body serialization; exclusions declared. |
 | Freeze candidate | Development sweep 1/2/4 CPU threads; choose one nonbaseline alternative on a fixed offered-rate pilot; save rates/rule before final runs. |
 | Evaluate | Three fresh-process model repeats; three paired HTTP repeats at three fixed offered rates, with tails, outcome counts, generator validity and variation. |
@@ -21,7 +21,7 @@ The baseline is ImageNet-pretrained TorchVision MobileNetV3-Small, with only the
 ## Predeclared evaluation contract
 
 - Config/seeds/sizes/quality tolerances are fixed in `configs/demo.json`. Training/calibration/validation/test have separate purposes; calibration is a subset of training. Selected-split exact duplicates are skipped. Near-duplicates and pretrained-data overlap remain limitations.
-- FP32 tolerance is `abs(error) <= 1e-5 + 1e-4*abs(reference)`, not argmax-only agreement. INT8 validation-loss budget is two absolute percentage points, fixed before final test scoring. That is a guard, not a predicted result.
+- FP32 tolerance is `abs(error) <= 1e-4 + 1e-4*abs(reference)`, not argmax-only agreement. INT8 validation-loss budget is two absolute percentage points, fixed before final test scoring. That is a guard, not a predicted result.
 - Explicit CPUExecutionProvider; inspect graph IR/opsets, quantized types and diagnostic optimized kernel/provider events. Unsupported/slower INT8 is a valid finding. Dynamic CNN quantization and QAT are not required.
 - Matched-budget model context: PyTorch FP32, ONNX FP32, supported ONNX INT8 at batch one/one thread. Thread tuning changes only ORT intra-op threads on the same FP32 graph.
 - Model timing: 50 untimed warmups, then 1,000 ready-tensor calls in each of three fresh processes. Retain raw observations; no decode/preprocess/session-load work inside this boundary.
@@ -37,3 +37,11 @@ The baseline is ImageNet-pretrained TorchVision MobileNetV3-Small, with only the
 One model/task/host, head-only CPU training, one static quantization path, one threading decision. No full-backbone training, architecture search, GPU port, serving platform, distributed deployment, dashboard or other projects. The 10×/100× questions remain conceptual.
 
 Stop once the rebuilt demo works, correctness/support are checked and the bounded comparison yields a defensible decision. Fix demonstrated faults, but do not repeatedly retune on final scores. Report unverified Docker packaging if no Docker engine exists. Keep GitHub private; no data/weight release or website publication.
+
+## Development tolerance diagnosis
+
+The first 32-image FP32 check failed 2/320 elements under absolute tolerance 1e-5, with no top-1 disagreement and maximum absolute error 4.58e-5. A development-only FP64-reference and unoptimized-ORT comparison found ordinary float32 differences of the same order (Torch-to-FP64 max 2.01e-5; optimized ORT-to-FP64 max 4.35e-5; unoptimized ORT-to-Torch max 5.13e-5). The absolute tolerance was revised to 1e-4 on development evidence and frozen before final test scoring; relative tolerance stays 1e-4. Initial failure and diagnostic records are preserved under results/rebuilt-cpu/diagnostics/. An intentionally wrong preprocessing path must still fail the numerical comparison. This change is not a quality-score improvement or a claim of equivalence on all possible inputs.
+
+## Development quantization decision
+
+The original Conv/Gemm/MatMul static path executed integer CPU kernels but scored 249/2000 (12.45%) on validation, versus FP32 1727/2000 (86.35%). Prepared-float output matched original FP32 exactly on the 32-image diagnostic, while both optimized and unoptimized quantized graphs showed the severe loss. This places the problem in the quantized path rather than float graph preparation; it does not establish a specific faulty layer/kernel. One targeted correction leaves the Conv backbone float and quantizes only classifier Gemm operations. It scored 1720/2000 (86.0%), a 0.35 pp validation loss within the unchanged 2 pp guard. The comparison implicates quantization of the convolution path in the larger failure, without resolving per-layer sensitivity. All choices were made on validation data before test scoring. This is partial INT8, not a fully quantized CNN or a guaranteed speedup. Initial records and diagnoses remain under results/rebuilt-cpu/diagnostics/.

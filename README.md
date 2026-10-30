@@ -6,7 +6,7 @@ A compact CPU classifier and inference-efficiency study using [TorchVision](http
 
 - Extract frozen ImageNet features with **MobileNetV3-Small**, then train only the last linear head for **CIFAR-10** public-image classification.
 - Share one checked RGB/resize/crop/normalization contract across training, export, evaluation and serving.
-- Export/verify ONNX FP32 and attempt one static per-channel INT8 QDQ experiment with training-only calibration.
+- Export/verify ONNX FP32 and evaluate static per-channel QDQ with training-only calibration. The full-CNN variant failed its quality guard; the retained classifier-only INT8 variant keeps convolution FP32.
 - Serve raw JPEG/PNG bytes through FastAPI and one explicitly configured CPU session loaded once per process.
 - Measure decoding, preparation, model, postprocessing, body reading, serialization and observed executor wait.
 - Compare one runtime-thread alternative fairly, preserving every scheduled request's outcome.

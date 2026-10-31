@@ -21,7 +21,6 @@ Source, configurations, the dependency lock and evaluation evidence are versione
 - HTTP study: one worker/executor; fixed same-model/input comparison at 69.45, 125.01 and 152.79 req/s, three paired 60-second repeats. 125,016 final offered requests all succeeded, with zero rejection/error/timeout/drop/outstanding outcomes. Window throughput is accounted separately from drain completions.
 - Four-thread candidate passed the frozen rule. Nominal p95: baseline repeats [6.236084,6.227125,6.244708] ms; candidate [5.006958,4.972667,4.934833] ms. Median p95 reduction 20.3%, nonoverlapping repeat ranges and generator guards passed. Recommendation is specific to this measured host/workload and uses more CPU parallelism; energy was not measured.
 - All 27 raw HTTP cohorts (18 final, 6 tracing diagnostics, 3 pilots) recomputed exactly into their stored summaries. The complete evidence and report-generation command are in docs/RESULTS.md.
-- Private beginner curriculum now follows the actual model/service/source and raw records, with separate progressive hints, checks and learner notes. It stays ignored and has a separate local private snapshot; no second-device transfer is implied.
 
 ## Limits
 

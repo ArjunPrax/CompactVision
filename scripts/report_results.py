@@ -1,4 +1,4 @@
-"""Verify raw run accounting and render the completed rebuild's evidence report.
+"""Verify raw run accounting and render the CPU inference study's evidence report.
 
 Run from the repository root: uv run python -m scripts.report_results
 This reads recorded evidence; it does not train, generate traffic or retune.

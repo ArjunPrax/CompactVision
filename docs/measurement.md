@@ -2,7 +2,7 @@
 
 The reporting helpers validate recorded client outcomes and sequential server-stage traces from the classification service. The service collects traces, the experiment runner generates traffic, and this component checks and summarizes the recorded evidence.
 
-These original reporting helpers use Python's standard library and were initially checked with Python 3.14.3. The rebuilt classifier/service uses the locked Python 3.12 environment and additional packages; its full checks are `uv run pytest -q` and `uv run ruff check .`. Run commands from the repository root.
+The reporting helpers use Python's standard library. The classifier and service use the locked Python 3.12 environment; full checks are `uv run pytest -q` and `uv run ruff check .`. Run commands from the repository root.
 
 ## Check the implementation
 

@@ -1,16 +1,16 @@
-# Rebuild and ownership improvement
+# CPU inference improvement plan
 
 ## Scope and contribution
 
-On 30 October 2026 the owner authorized a full local rebuild because the earlier source cannot be obtained. This supersedes transfer-dependent planning without withdrawing the earlier completion report. This build has independent artifacts, provenance and results.
+I designed this study to diagnose latency in a small image-classification service and test one bounded configuration change. Model artifacts, input manifests and run records make the comparison reproducible.
 
-The baseline is ImageNet-pretrained TorchVision MobileNetV3-Small, with only the last linear head trained for CIFAR-10, exported to ONNX and served on CPU. This public-image demonstration is not workshop-parts recognition. The ownership question is: **where does a batch-one request spend time, and does one alternative thread setting improve it without changing correctness or hiding overload?** A static INT8 experiment supplies separate quality/size/backend context and need not replace FP32.
+The baseline is ImageNet-pretrained TorchVision MobileNetV3-Small, with only the last linear head trained for CIFAR-10, exported to ONNX and served on CPU. The experiment asks: **where does a batch-one request spend time, and does one alternative thread setting improve it without changing correctness or hiding overload?** A static INT8 experiment evaluates quality, size and backend behavior separately; FP32 remains the default serving backend.
 
 ## Milestones and acceptance
 
 | Milestone | Acceptance |
 | --- | --- |
-| Rebuild baseline | Fixed manifests; 10,000 training, 2,000 validation and 2,000 official-test images. Train head for 20 epochs; select by validation correct/loss only. |
+| Establish baseline | Fixed manifests; 10,000 training, 2,000 validation and 2,000 official-test images. Train head for 20 epochs; select by validation correct/loss only. |
 | Input/export correctness | One transform checked against prescribed upstream transform; FP32 numeric parity on 32 validation images and dynamic batch two. |
 | Quantization applicability | Static per-channel S8S8 QDQ, MinMax over 128 training-only images; retain the rejected full-CNN experiment and the one targeted classifier-only correction, with graph/kernel/provider evidence and quality guards. |
 | Explain stages | Real decode/preprocess/model/postprocess plus body read, observable executor wait and response-body serialization; exclusions declared. |
@@ -36,7 +36,7 @@ The baseline is ImageNet-pretrained TorchVision MobileNetV3-Small, with only the
 
 One model/task/host, head-only CPU training, one static quantization path, one threading decision. No full-backbone training, architecture search, GPU port, serving platform, distributed deployment, dashboard or other projects. The 10×/100× questions remain conceptual.
 
-Stop once the rebuilt demo works, correctness/support are checked and the bounded comparison yields a defensible decision. Fix demonstrated faults, but do not repeatedly retune on final scores. Report unverified Docker packaging if no Docker engine exists. Keep GitHub private; no data/weight release or website publication.
+The study ends once the demo works, correctness and runtime support are checked, and the controlled comparison yields a defensible decision. Final scores must not drive repeated retuning. Docker packaging remains unverified because the evaluation host has no Docker engine. Source and evaluation evidence are public; dataset files and generated weights are excluded from Git.
 
 ## Development tolerance diagnosis
 

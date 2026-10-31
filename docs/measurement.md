@@ -1,6 +1,6 @@
 # Measurement helpers: schema 1
 
-This independently written component validates recorded client outcomes and sequential server-stage traces. It does not load a model, generate traffic or replace the completed baseline. Integration into that baseline and the controlled threading comparison remain pending source/artifact access.
+The reporting helpers validate recorded client outcomes and sequential server-stage traces from the classification service. The service collects traces, the experiment runner generates traffic, and this component checks and summarizes the recorded evidence.
 
 These original reporting helpers use Python's standard library and were initially checked with Python 3.14.3. The rebuilt classifier/service uses the locked Python 3.12 environment and additional packages; its full checks are `uv run pytest -q` and `uv run ruff check .`. Run commands from the repository root.
 
@@ -81,7 +81,7 @@ Each trace has `request_id`, `duration_ns`, and `stages`, a list of `{name,start
 
 `Trace(request_id)` uses `time.perf_counter_ns()` by default. The `stage(name)` context manager records elapsed work even when the wrapped operation raises, then lets that exception propagate. Call `finish()` once after handling the exception if the integration needs the failed request's trace. One `Trace` belongs to one sequential request path: it is not shared between tasks/threads, does not support nested/overlapping stages, and rejects use after finishing. An async/parallel service needs an explicit integration decision about interval representation rather than this helper silently double-counting overlapping work.
 
-Keep the actual decoder's materialization inside `decode`; place normalization/copies inside the stated preprocessing boundary; exclude session construction from steady-state `model` time. Stage names alone cannot enforce these semantics. Measure instrumentation overhead on the real development workload before final comparisons. These hooks have not been placed into the unavailable service yet.
+The service keeps decoder materialization inside `decode`, normalization/copies inside `preprocess`, and session construction outside steady-state `model` time. Stage names alone cannot enforce these semantics. The study includes a paired instrumentation diagnostic; its scope and limits are reported in [RESULTS.md](RESULTS.md).
 
 Trace IDs must match sent client requests, and each can have only one server trace in schema 1. Optional server traces are grouped by **client outcome**, so timeout/error traces cannot silently become success-stage evidence. Missing server traces remain missing; inspect per-stage sample counts. No server-received count is inferred from client outcomes or partial tracing.
 
@@ -94,6 +94,6 @@ Trace IDs must match sent client requests, and each can have only one server tra
 - p50 is the arithmetic median; p95 uses nearest rank: sort N values and choose one-based rank `ceil(0.95*N)`. The method is recorded. No p99 is reported. The warning below 2,000 successes follows the proposed experiment's sample aim; that threshold is not a statistical guarantee. Every per-stage distribution has its own count, potentially much smaller.
 - Within each sequential trace, `unattributed = trace duration - sum(stage durations)`. This includes uncovered local work and timer gaps; it is **not automatically queue time**. No client/server timestamp subtraction or percentile subtraction is performed, and stage p95s are not summed.
 
-Use the improvement plan's fixed-model/current-versus-candidate, paired-repeat evaluation later. This reporting layer alone does not establish a speedup, identify a bottleneck or complete the ownership contribution.
+The controlled threading study uses these definitions for its paired comparison. See [RESULTS.md](RESULTS.md) for the measured decision and stage timings, and [IMPROVEMENT_PLAN.md](../IMPROVEMENT_PLAN.md) for the acceptance rules.
 
 Raw JSONL may be gzip-compressed (`.jsonl.gz`); the reader supports both. The live integration in `compact_vision/service.py` measures executor wait explicitly with the same process clock and aligns engine stages through `Trace.origin_ns`; this is not cross-machine clock subtraction. `COMPACT_VISION_TRACING=0` disables stage collection/trace-header emission for the predeclared overhead diagnostic; common wrapper/clock calls remain.

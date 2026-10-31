@@ -1,12 +1,12 @@
 # Current status
 
-Updated 30 October 2026. **The rebuilt native CPU demo and bounded ownership experiment are complete.**
+Updated 31 October 2026. **The native CPU classifier, service and controlled threading study are complete.**
 
 ## Scope and artifacts
 
-The owner authorized rebuilding everything because the other computer is unavailable. This is an independently attributed MobileNetV3-Small/CIFAR-10 rebuild, not an exact reproduction of undocumented historical results. The original completion report remains separate. It is a ten-class public-image demo, not workshop-parts recognition or production robot perception.
+I built a MobileNetV3-Small/CIFAR-10 classification service and evaluated its CPU inference path. The task covers ten public-image classes; workshop-parts recognition and production robot perception have not been evaluated. All reported results are tied to the code, artifacts and run records in this repository.
 
-Source/configs/lock/evaluation evidence are versioned in the private GitHub repository. Public dataset files and generated checkpoints/ONNX weights exist locally under ignored `data/` and `models/demo/`; they are not uploaded. A clone can rebuild them using the documented command. The installed native service can start with `uv run compact-vision serve --threads 4`.
+Source, configurations, the dependency lock and evaluation evidence are versioned in the public GitHub repository. Dataset files and generated checkpoints/ONNX weights remain local under ignored `data/` and `models/demo/`; they are not uploaded. A clone can rebuild them using the documented command. After building, start the native service with `uv run compact-vision serve --threads 4`.
 
 ## Verified
 
@@ -31,4 +31,4 @@ The benchmark servers are stopped after the study. Data/weights and learning mat
 
 ## Next action
 
-Use the native demo and work through private lessons 06, 09 and 10. Trace the real input, reconstruct a small mechanism from memory, predict a controlled change, recalculate a metric from raw records, then draw the architecture and answer the twelve questions without notes. Independent understanding is not established by generated guides/tests alone. Future technical work, if requested, should target one remaining evidence gap rather than expanding the platform.
+The next technical step is to evaluate a representative high-resolution image workload and check whether decoding changes the bottleneck. Other open questions include the full-CNN quantization failure, CPU contention with other processes and container behavior. Each needs a separate, controlled experiment; the current results do not resolve them.

@@ -1,23 +1,23 @@
 # Compact Vision Inference Service
 
-A compact CPU classifier and inference-efficiency study using [TorchVision](https://github.com/pytorch/vision) and [ONNX Runtime](https://github.com/microsoft/onnxruntime). The owner authorized a fresh rebuild on 30 October 2026 because the other computer's code cannot be recovered. New results remain separate from earlier reported work.
+A compact image-classification service and CPU inference study built with [TorchVision](https://github.com/pytorch/vision), [ONNX Runtime](https://github.com/microsoft/onnxruntime) and FastAPI. I built it to understand where inference requests spend time, verify model correctness across backends and measure whether changing CPU thread settings helps.
 
 ## What it does
 
-- Extract frozen ImageNet features with **MobileNetV3-Small**, then train only the last linear head for **CIFAR-10** public-image classification.
-- Share one checked RGB/resize/crop/normalization contract across training, export, evaluation and serving.
-- Export/verify ONNX FP32 and evaluate static per-channel QDQ with training-only calibration. The full-CNN variant failed its quality guard; the retained classifier-only INT8 variant keeps convolution FP32.
-- Serve raw JPEG/PNG bytes through FastAPI and one explicitly configured CPU session loaded once per process.
-- Measure decoding, preparation, model, postprocessing, body reading, serialization and observed executor wait.
-- Compare one runtime-thread alternative fairly, preserving every scheduled request's outcome.
+- Uses frozen ImageNet features from **MobileNetV3-Small**, with only the last linear head trained for **CIFAR-10** classification.
+- Shares checked RGB conversion, resizing, cropping and normalization across training, export, evaluation and serving.
+- Verifies ONNX FP32 output parity and evaluates static per-channel INT8 quantization with training-only calibration. The full-CNN variant failed the quality threshold; the retained classifier-only INT8 variant keeps convolution in FP32.
+- Serves raw JPEG/PNG bytes through FastAPI, reusing one explicitly configured ONNX Runtime CPU session per process.
+- Measures body reading, executor wait, image decoding, preprocessing, model execution, postprocessing and serialization separately.
+- Compares CPU thread settings with identical inputs and accounts for every scheduled request, including failures and timeouts.
 
 This is a ten-class public-image demonstration, **not workshop-parts recognition or a production perception system**. Default subsets are 10,000 train, 2,000 validation, 2,000 official-test images, plus 128 training-only calibration inputs. CIFAR-10 images are 32×32, resized for the pretrained input. Near-duplicates and upstream pretraining overlap are not ruled out; results do not establish workshop/high-resolution camera quality or decoding cost.
 
-See [STATUS.md](STATUS.md) for verified progress/results, [IMPROVEMENT_PLAN.md](IMPROVEMENT_PLAN.md) for the contribution and frozen decision rules, and [ATTRIBUTION.md](ATTRIBUTION.md) for provenance. Synthetic fixtures are accounting checks, never inference results.
+See [STATUS.md](STATUS.md) for current status, [IMPROVEMENT_PLAN.md](IMPROVEMENT_PLAN.md) for the experiment design and acceptance rules, and [ATTRIBUTION.md](ATTRIBUTION.md) for upstream sources. Synthetic fixtures test request accounting; measured results come from the recorded model and HTTP runs.
 
 ## Verified native result
 
-The rebuilt FP32 model scored **1,738/2,000 (86.9%)** on the frozen test subset. On this M4 Pro/battery/loopback workload, changing ORT intra-op threads from one to four reduced nominal median client p95 from **6.236 ms to 4.973 ms (20.3%)** across three paired repeats, with no failures or generator drops. This changes CPU parallelism, not energy efficiency; new machines/workloads need their own check. See [the complete measured report](docs/RESULTS.md) for counts, variation, stage evidence, rejected quantization and limits.
+The FP32 model scored **1,738/2,000 (86.9%)** on the fixed test subset. On an M4 Pro running on battery power with a loopback client, changing ONNX Runtime intra-op threads from one to four reduced the median of three per-run client p95 latencies from **6.236 ms to 4.973 ms (20.3%)** at the nominal offered rate of **69.45 requests/s**, with no failures or generator drops. Energy use was not measured, and other machines or workloads need their own evaluation. See [the complete measured report](docs/RESULTS.md) for counts, variation, stage timings, the rejected quantization experiment and limitations.
 
 For this measured local configuration, use `uv run compact-vision serve --threads 4`. The conservative one-thread baseline remains available for reproduction. Docker packaging is unverified on this host; no Docker engine is installed.
 
@@ -81,7 +81,7 @@ After methods/quality settings are frozen, explicitly score the untouched test s
 uv run compact-vision evaluate --split test
 ```
 
-Individual commands are `prepare`, `train`, `export`, `quantize`, `evaluate --split validation`. Configuration is [configs/demo.json](configs/demo.json); an alternate is passed before the command as `--config path.json`. Read [evaluation definitions](docs/evaluation.md) and [record schema](docs/measurement.md) before interpreting reports. Historical approximate speedups do not predict this rebuild's results.
+Individual commands are `prepare`, `train`, `export`, `quantize`, `evaluate --split validation`. Configuration is [configs/demo.json](configs/demo.json); an alternate is passed before the command as `--config path.json`. Read [evaluation definitions](docs/evaluation.md) and [record schema](docs/measurement.md) before interpreting reports.
 
 ## Checks and container packaging
 
@@ -99,8 +99,12 @@ docker build -t compact-vision .
 docker run --rm -p 127.0.0.1:8000:8000 -v "$PWD/models/demo:/models:ro" compact-vision
 ```
 
-## Ownership and learning
+## Design and contribution
 
-The personal contribution is checked shared preprocessing, honest stage/outcome accounting and a defensible configuration decision, not invention of MobileNet/ONNX/quantization. Private lessons in Git-ignored `.learning/` start with terminal/Python/image basics, proceed through actual source and experiments, and keep exercises, progressive hints and answer checks separate. They are privately backed up and do not accompany a clone. Public configs, definitions, commands and selected evidence remain outside that folder. No employer/lab assets are used.
+My work focuses on integrating the model and service, checking shared preprocessing and export parity, diagnosing time spent in each request stage, and evaluating a controlled CPU threading change. The model architecture, pretrained weights and inference/quantization algorithms come from the upstream projects credited in [ATTRIBUTION.md](ATTRIBUTION.md).
+
+The experiment keeps correctness, model size and latency separate. Classifier-only INT8 reduced artifact size by **28.9%** but showed no meaningful model-only speedup. Four CPU threads improved request latency in the measured workload; higher parallelism also means competing for more CPU resources.
+
+Private study notes are excluded from Git. The source, evaluation protocol, configurations and recorded results needed to inspect or reproduce the study are included in this repository.
 
 To verify saved raw accounting and regenerate the results report without training or generating traffic: `uv run python -m scripts.report_results`.

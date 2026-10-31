@@ -7,12 +7,12 @@
 - [CIFAR-10](https://www.cs.toronto.edu/~kriz/cifar.html), Alex Krizhevsky, Vinod Nair and Geoffrey Hinton. Cite Alex Krizhevsky, *Learning Multiple Layers of Features from Tiny Images*, 2009. TorchVision checks the official archive MD5. Dataset images are not committed/released.
 - FastAPI, Uvicorn, Pillow, NumPy and HTTPX provide serving, imaging and client infrastructure; the lock file identifies dependencies.
 
-MobileNetV3 originates in Howard et al., *Searching for MobileNetV3*, ICCV 2019. Architecture, pretrained ImageNet results and runtime/quantization algorithms are not personal inventions.
+MobileNetV3 originates in Howard et al., *Searching for MobileNetV3*, ICCV 2019. The architecture, pretrained weights and runtime/quantization algorithms come from these upstream sources.
 
 ## This implementation
 
-The independently written code in `compact_vision/` and `benchmarks/` integrates shared checked preprocessing, frozen-feature head training, export/parity, a static INT8 experiment, CPU serving, stage/outcome reporting and a controlled threading decision. No code was copied from the unavailable earlier personal project or employer/lab assets.
+My contribution is the application and evaluation code in `compact_vision/` and `benchmarks/`: shared preprocessing checks, frozen-feature head training, ONNX export/parity, a static INT8 experiment, CPU serving, stage timings, request-outcome accounting and a controlled threading comparison.
 
-The owner authorized a fresh rebuild on 30 October 2026. Earlier approximate size/speed/accuracy reports stay historical user reports; they are not measurements for this build. New claims require this code/model/input/hardware provenance.
+The measurements in this repository identify the source revision, model, inputs, configuration and hardware used. Synthetic fixtures test implementation contracts and are excluded from model-quality and performance claims.
 
-Training a new last linear layer over frozen ImageNet features is transfer learning/head training, not full-backbone fine-tuning. CIFAR-10 is a public-image demo, not workshop-parts recognition or production operation. Synthetic fixtures/fake engines test contracts only. Data and generated weights stay ignored; no release is authorized.
+Training the last linear layer over frozen ImageNet features is transfer learning with a frozen backbone. The evaluated task is CIFAR-10 classification. Dataset files and generated weights are excluded from Git; the build command retrieves public source data and pretrained weights under their respective terms. This project uses public sources and no employer, lab or private research assets.

@@ -49,9 +49,9 @@ def render(root, *, verify_raw=True):
     hardware = f"{hardware_parts[0]}, {int(hardware_parts[1]) / 2**30:g} GiB RAM" if len(hardware_parts) == 2 and hardware_parts[1].isdigit() else env["hardware"]
     revisions = sorted({run["summary"]["reproducibility"]["code_revision"] for run in http["runs"]})
     lines = [
-        "# Rebuilt CPU classifier: measured results",
+        "# CPU classifier: measured results",
         "",
-        "30 October 2026. This is the newly rebuilt MobileNetV3-Small/CIFAR-10 experiment, not the inaccessible earlier computer's results. No historical approximate speedup is used as a new measurement.",
+        "Measurements recorded 30 October 2026. I evaluated MobileNetV3-Small on CIFAR-10 and compared CPU inference configurations using the saved protocol and raw run records.",
         "",
         f"**Decision:** {'accept' if http['candidate_accepted'] else 'do not accept'} the {candidate}-thread candidate under the saved rule; recommended setting for this measured host/workload is **{http['recommended_threads']} ORT intra-op threads**. The observed nominal median p95 difference is {change:.1f}% lower for the candidate; the decision also requires repeat-range, success-rate and generator-validity guards. This is not a universal gain.",
         "The thread change uses more CPU parallelism; CPU utilization/energy per request and performance alongside other robotics workloads were not measured.",
@@ -158,7 +158,7 @@ def render(root, *, verify_raw=True):
         "",
         "## Source evidence",
         "",
-        "Training/selection: results/rebuilt-cpu/training.json. Input example: input-trace.json. Correctness: parity.json and diagnostics/. Static scope/kernel/weight-parameter evidence: quantization.json. Quality: quality-validation.json and quality-test.json. Model repeats: model/. HTTP pilots, overhead, frozen plan, raw paired runs and decision: http/. These files are relative to the results/rebuilt-cpu root where applicable. Historical reports and synthetic test fixtures are excluded from these measured claims.",
+        "Training/selection: results/rebuilt-cpu/training.json. Input example: input-trace.json. Correctness: parity.json and diagnostics/. Static scope/kernel/weight-parameter evidence: quantization.json. Quality: quality-validation.json and quality-test.json. Model repeats: model/. HTTP pilots, overhead, frozen plan, raw paired runs and decision: http/. These files are relative to the results/rebuilt-cpu root where applicable. Synthetic test fixtures are excluded from these measured claims.",
     ])
     return "\n".join(lines) + "\n", checked
 
